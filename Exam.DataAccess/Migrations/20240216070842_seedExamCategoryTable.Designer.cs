@@ -3,6 +3,7 @@ using System;
 using Exam.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Exam.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240216070842_seedExamCategoryTable")]
+    partial class seedExamCategoryTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -245,6 +248,12 @@ namespace Exam.DataAccess.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Content")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CorrectOption")
+                        .HasColumnType("text");
+
                     b.Property<DateOnly>("CreatedAt")
                         .HasColumnType("date");
 
@@ -257,12 +266,29 @@ namespace Exam.DataAccess.Migrations
                     b.Property<DateOnly>("ModifiedAt")
                         .HasColumnType("date");
 
+                    b.Property<string>("OptionA")
+                        .HasColumnType("text");
+
+                    b.Property<string>("OptionB")
+                        .HasColumnType("text");
+
+                    b.Property<string>("OptionC")
+                        .HasColumnType("text");
+
+                    b.Property<string>("OptionD")
+                        .HasColumnType("text");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("isCorrect")
                         .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ExaminationId");
+
+                    b.HasIndex("QuestionId");
 
                     b.ToTable("Quizzes");
                 });
@@ -399,21 +425,6 @@ namespace Exam.DataAccess.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("QuestionQuiz", b =>
-                {
-                    b.Property<int>("QuestionsId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("QuizzesId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("QuestionsId", "QuizzesId");
-
-                    b.HasIndex("QuizzesId");
-
-                    b.ToTable("QuestionQuiz");
-                });
-
             modelBuilder.Entity("Exam.Entities.Models.Examination", b =>
                 {
                     b.HasOne("Exam.Entities.Models.ExamCategory", "ExamCategory")
@@ -444,7 +455,15 @@ namespace Exam.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Exam.Entities.Models.Question", "Question")
+                        .WithMany()
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Examination");
+
+                    b.Navigation("Question");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -494,21 +513,6 @@ namespace Exam.DataAccess.Migrations
                     b.HasOne("Exam.Entities.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("QuestionQuiz", b =>
-                {
-                    b.HasOne("Exam.Entities.Models.Question", null)
-                        .WithMany()
-                        .HasForeignKey("QuestionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Exam.Entities.Models.Quiz", null)
-                        .WithMany()
-                        .HasForeignKey("QuizzesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

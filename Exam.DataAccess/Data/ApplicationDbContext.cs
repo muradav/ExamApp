@@ -20,5 +20,28 @@ namespace Exam.DataAccess.Data
         public DbSet<Question> Questions { get; set; }
         public DbSet<Examination> Examinations { get; set; }
         public DbSet<Quiz> Quizzes { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<ExamCategory>().HasData(
+                new ExamCategory
+                {
+                    Id = 1,
+                    Name = "General Knowledge"
+                },
+                new ExamCategory
+                {
+                    Id = 2,
+                    Name = "Mathematics"
+                },
+                new ExamCategory
+                {
+                    Id = 3,
+                    Name = "History"
+                }
+                );
+        }
     }
 }

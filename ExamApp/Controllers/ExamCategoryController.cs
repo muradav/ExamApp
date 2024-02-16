@@ -1,7 +1,6 @@
 ﻿using Exam.DataAccess.Data;
-using Exam.Entities.Dtos.ExamCategoryDto;
+using Exam.DataAccess.Dtos.ExamCategoryDto;
 using Exam.Entities.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExamApp.Controllers
@@ -11,10 +10,12 @@ namespace ExamApp.Controllers
     public class ExamCategoryController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<ExamCategoryController> _logger;
 
-        public ExamCategoryController(ApplicationDbContext context)
+        public ExamCategoryController(ApplicationDbContext context, ILogger<ExamCategoryController> logger = null)
         {
             _context = context;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -27,9 +28,11 @@ namespace ExamApp.Controllers
                 examCategory.Name = category.Name;
                 await _context.AddAsync(examCategory);
                 _context.SaveChanges();
+                //_logger.LogInformation($"{examCategory.Name} category is created");
                 return Ok();
             }
 
+            //_logger.LogError("Error accured");
             return NotFound();
         }
     }

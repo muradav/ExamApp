@@ -1,5 +1,5 @@
 ﻿using Exam.DataAccess.Data;
-using Exam.Entities.Dtos.ExaminationDto;
+using Exam.DataAccess.Dtos.ExaminationDto;
 using Exam.Entities.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -36,13 +36,6 @@ namespace ExamApp.Controllers
                 examination.Quizzes = requestedQuestions.Select(question => 
                 {
                     var quiz = new Quiz();
-                    quiz.Content = question.Content;
-                    quiz.OptionA = question.OptionA;
-                    quiz.OptionB = question.OptionB;
-                    quiz.OptionC = question.OptionC;
-                    quiz.OptionD = question.OptionD;
-                    quiz.CorrectOption = question.CorrectOption;
-                    quiz.QuestionId = question.Id;
                     return quiz;
                 }).ToList();
 

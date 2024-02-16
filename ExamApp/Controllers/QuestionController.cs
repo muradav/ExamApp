@@ -1,12 +1,9 @@
-﻿using Exam.Entities.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Exam.Business.Services;
-using Exam.Entities.Dtos.QuestionDto;
-using Exam.DataAccess.Data;
+﻿using Exam.DataAccess.Data;
+using Exam.DataAccess.Dtos.QuestionDto;
+using Exam.Entities.Models;
 using ExcelDataReader;
+using Microsoft.AspNetCore.Mvc;
 using System.Text;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ExamApp.Controllers
 {
@@ -67,7 +64,10 @@ namespace ExamApp.Controllers
                                 question.CorrectOption = reader.GetValue(6).ToString();
 
                                 question.ExamCategoryId = questionDto.ExamCategoryId;
-                                category.QuestionCount++;
+                                if (category!=null)
+                                {
+                                    category.QuestionCount++;
+                                }
 
                                 question.ExcelUrl = filename; 
 
