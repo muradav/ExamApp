@@ -1,4 +1,4 @@
-﻿namespace Exam.DataAccess.Dtos.ExaminationDto
+﻿namespace Exam.Business.Dtos.ExaminationDto
 {
     public class ExaminationDto
     {

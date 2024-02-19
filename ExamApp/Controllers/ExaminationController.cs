@@ -1,5 +1,5 @@
 ﻿using Exam.DataAccess.Data;
-using Exam.DataAccess.Dtos.ExaminationDto;
+using Exam.Business.Dtos.ExaminationDto;
 using Exam.Entities.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace Exam.DataAccess.Dtos.QuestionDto
+namespace Exam.Business.Dtos.QuestionDto
 {
     public class QuestionDto
     {
