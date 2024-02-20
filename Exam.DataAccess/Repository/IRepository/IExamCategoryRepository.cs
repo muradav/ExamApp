@@ -10,10 +10,11 @@ namespace Exam.DataAccess.Repository.IRepository
 {
     public interface IExamCategoryRepository
     {
-        Task<List<ExamCategory>> GetAll(Expression<Func<ExamCategory, bool>> filter = null);
+        Task<List<ExamCategory>> GetAll(Expression<Func<ExamCategory, bool>> filter = null, bool tracked = true);
         Task<ExamCategory> GetOne(Expression<Func<ExamCategory, bool>> filter = null, bool tracked = true);
-        Task Create(ExamCategory entity);
+        Task Add(ExamCategory entity);
+        Task<bool> Update(ExamCategory entity);
         bool Remove(ExamCategory entity);
-        Task Save();
+        Task SaveAsync();
     }
 }

@@ -15,16 +15,27 @@ namespace Exam.DataAccess.Repository
             _db = db;
         }
 
-        public async Task Create(ExamCategory entity)
+        public async Task Add(ExamCategory entity)
         {
             await _db.AddAsync(entity);
         }
 
-        public async Task<List<ExamCategory>> GetAll(Expression<Func<ExamCategory, bool>> filter = null)
+        public async Task<bool> Update(ExamCategory entity)
+        {
+            _db.Update(entity);
+
+            return await Task.FromResult(true);
+        }
+
+        public async Task<List<ExamCategory>> GetAll(Expression<Func<ExamCategory, bool>> filter = null, bool tracked = true)
         {
             IQueryable<ExamCategory> query = _db.ExamCategories;
 
-            if (query!=null)
+            if (!tracked)
+            {
+                query = query.AsNoTracking();
+            }
+            if (filter != null)
             {
                 query = query.Where(filter);
             }
@@ -39,7 +50,7 @@ namespace Exam.DataAccess.Repository
             {
                 query = query.AsNoTracking();
             }
-            if (query != null)
+            if (filter != null)
             {
                 query = query.Where(filter);
             }
@@ -52,9 +63,10 @@ namespace Exam.DataAccess.Repository
             return true;
         }
 
-        public async Task Save()
+        public async Task SaveAsync()
         {
             await _db.SaveChangesAsync();
         }
+
     }
 }

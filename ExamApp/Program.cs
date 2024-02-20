@@ -2,6 +2,8 @@ using Exam.Business.Services;
 using Exam.DataAccess.Data;
 using Exam.Business.Mapping;
 using Microsoft.EntityFrameworkCore;
+using Exam.DataAccess.Repository.IRepository;
+using Exam.DataAccess.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +23,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase"));
 });
-
+builder.Services.AddScoped<IExamCategoryRepository, ExamCategoryRepository>();
 builder.Services.AddAutoMapper(option =>
 {
     option.AddProfile(new MapperProfile());
