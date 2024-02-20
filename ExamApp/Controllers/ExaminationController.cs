@@ -1,7 +1,6 @@
 ﻿using Exam.DataAccess.Data;
-using Exam.Business.Dtos.ExaminationDto;
+using Exam.Dto.Dtos.ExaminationDto;
 using Exam.Entities.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExamApp.Controllers

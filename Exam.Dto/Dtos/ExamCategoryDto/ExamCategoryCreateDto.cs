@@ -1,4 +1,4 @@
-﻿namespace Exam.Business.Dtos.ExamCategoryDto
+﻿namespace Exam.Dto.Dtos.ExamCategoryDto
 {
     public class ExamCategoryCreateDto
     {

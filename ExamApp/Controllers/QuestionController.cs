@@ -1,5 +1,5 @@
 ﻿using Exam.DataAccess.Data;
-using Exam.Business.Dtos.QuestionDto;
+using Exam.Dto.Dtos.QuestionDto;
 using Exam.Entities.Models;
 using ExcelDataReader;
 using Microsoft.AspNetCore.Mvc;

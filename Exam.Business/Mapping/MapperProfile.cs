@@ -1,8 +1,8 @@
 ﻿
 using AutoMapper;
-using Exam.Business.Dtos.ExamCategoryDto;
-using Exam.Business.Dtos.ExaminationDto;
-using Exam.Business.Dtos.QuestionDto;
+using Exam.Dto.Dtos.ExamCategoryDto;
+using Exam.Dto.Dtos.ExaminationDto;
+using Exam.Dto.Dtos.QuestionDto;
 using Exam.Entities.Models;
 
 namespace Exam.Business.Mapping

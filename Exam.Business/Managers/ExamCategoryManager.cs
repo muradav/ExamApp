@@ -1,17 +1,8 @@
 ﻿using AutoMapper;
-using Exam.Business.AppModel;
-using Exam.Business.Dtos.ExamCategoryDto;
-using Exam.DataAccess.Data;
 using Exam.DataAccess.Repository.IRepository;
+using Exam.Dto.AppModel;
+using Exam.Dto.Dtos.ExamCategoryDto;
 using Exam.Entities.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Exam.Business.Managers
 {

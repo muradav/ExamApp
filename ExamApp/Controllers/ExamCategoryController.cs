@@ -1,11 +1,9 @@
-﻿using Exam.DataAccess.Data;
-using Exam.Business.Dtos.ExamCategoryDto;
-using Exam.Entities.Models;
-using Microsoft.AspNetCore.Mvc;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
 using Exam.Business.Managers;
 using Exam.DataAccess.Repository.IRepository;
+using Exam.Dto.Dtos.ExamCategoryDto;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExamApp.Controllers
 {

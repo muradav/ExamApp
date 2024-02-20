@@ -20,6 +20,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Exam.DataAccess\Exam.DataAccess.csproj" />
+	  <ProjectReference Include="..\Exam.Dto\Exam.Dto.csproj" />
 	  <ProjectReference Include="..\Exam.Entities\Exam.Entities.csproj" />
 	</ItemGroup>
 

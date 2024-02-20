@@ -27,6 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Exam.Business\Exam.Business.csproj" />
     <ProjectReference Include="..\Exam.DataAccess\Exam.DataAccess.csproj" />
+    <ProjectReference Include="..\Exam.Dto\Exam.Dto.csproj" />
   </ItemGroup>
 
   <ItemGroup>
