@@ -9,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+ConfigurationManager configuration = builder.Configuration;
+
 //Log.Logger = new LoggerConfiguration().MinimumLevel.Information()
 //    .WriteTo.File("log/logs.xml", rollingInterval: RollingInterval.Day).CreateLogger();
 
@@ -30,6 +32,8 @@ builder.Services.AddAutoMapper(option =>
 });
 
 builder.Services.AddIdentityServices();
+
+builder.Services.AddAuthenticationServices(configuration);
 
 builder.Services.AddSwaggerGen();
 

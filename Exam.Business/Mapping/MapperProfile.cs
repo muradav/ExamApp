@@ -1,5 +1,6 @@
 ﻿
 using AutoMapper;
+using Exam.Dto.Dtos.AccountDto;
 using Exam.Dto.Dtos.ExamCategoryDto;
 using Exam.Dto.Dtos.ExaminationDto;
 using Exam.Dto.Dtos.QuestionDto;
@@ -23,6 +24,10 @@ namespace Exam.Business.Mapping
             CreateMap<ExamCategory, ExamCategoryDto>().ReverseMap();
             CreateMap<ExamCategory, ExamCategoryCreateDto>().ReverseMap();
             CreateMap<ExamCategory, ExamCategoryUpdateDto>().ReverseMap();
+            #endregion
+
+            #region AuthenticationMapper
+            CreateMap<AppUser, RegistrationRequestDto>().ReverseMap();
             #endregion
         }
     }

@@ -2,6 +2,7 @@
 using Exam.Business.Managers;
 using Exam.DataAccess.Repository.IRepository;
 using Exam.Dto.Dtos.ExamCategoryDto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +20,7 @@ namespace ExamApp.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Examiner")]
         public async Task<IActionResult> GetAll()
         {
             var result = await ExamCategoryManager.GetAll();
