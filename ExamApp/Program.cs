@@ -40,6 +40,8 @@ builder.Services.AddSwaggerGen(option =>
 {
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
+        Description = "Enter 'Bearer' [space] and then your token in the text input below \r\n\r\n" +
+                      "Example: Bearer 12345abcdef",
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,
