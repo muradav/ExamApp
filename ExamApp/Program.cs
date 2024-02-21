@@ -4,6 +4,7 @@ using Exam.Business.Mapping;
 using Microsoft.EntityFrameworkCore;
 using Exam.DataAccess.Repository.IRepository;
 using Exam.DataAccess.Repository;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,7 +36,32 @@ builder.Services.AddIdentityServices();
 
 builder.Services.AddAuthenticationServices(configuration);
 
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(option =>
+{
+    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+                Scheme = "oauth2",
+                Name = "Bearer"
+            },
+            new List<string>()
+        }
+    });
+});
 
 var app = builder.Build();
 
