@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Exam.DataAccess.Repository.IRepository;
 using Exam.DataAccess.Repository;
 using Microsoft.OpenApi.Models;
+using Exam.DataAccess.DbInitializer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase"));
 });
+builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddScoped<IExamCategoryRepository, ExamCategoryRepository>();
 builder.Services.AddAutoMapper(option =>
 {
@@ -80,6 +82,16 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
+SeedDatabase();
+
 app.MapControllers();
 
 app.Run();
+
+void SeedDatabase()
+{
+    using (var scope = app.Services.CreateScope()){
+        var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+        dbInitializer.Initialize();
+    }
+}

@@ -15,9 +15,4 @@ namespace Exam.Entities.Models
         [NotMapped]
         public string FullName { get { return $"{Name} {Surname}"; } }
     }
-    public enum Roles
-    {
-        Admin,
-        Examiner
-    }
 }
