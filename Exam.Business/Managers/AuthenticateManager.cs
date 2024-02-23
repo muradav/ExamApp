@@ -137,19 +137,81 @@ namespace Exam.Business.Managers
         }
 
         
-        public async Task<ResultModel<bool>> CreateRole()
+        public async Task<ResultModel<bool>> CreateRole(string role)
         {
             var result = new ResultModel<bool>();
 
-            var roleResult = await _roleManager.CreateAsync(new IdentityRole { Name = "Admin" });
-            roleResult = await _roleManager.CreateAsync(new IdentityRole { Name = "Examiner" });
+            try
+            {
+                var upperRole = char.ToUpper(role[0]) + role.Substring(1);
+                await _roleManager.CreateAsync(new IdentityRole { Name = upperRole });
 
-            result.Data = true;
-            result.IsSuccess = true;
+                result.Data = true;
+                result.IsSuccess = true;
+                result.Message = "Role created";
+            }
+            catch (Exception ex)
+            {
+
+                result.IsSuccess = false;
+                result.Message = ex.Message;
+            }
 
             return result;
         }
 
+        public async Task<ResultModel<bool>> RegistrationUser(RegistrationUserDto model)
+        {
+            var result = new ResultModel<bool>();
 
+            try
+            {
+                var userExists = await _userManager.FindByNameAsync(model.UserName);
+                if (userExists != null)
+                {
+                    result.Message = "User already exists!";
+                    result.IsSuccess = false;
+                    return result;
+                }
+
+                AppUser user = _mapper.Map<AppUser>(model);
+
+                var registerResult = await _userManager.CreateAsync(user, model.Password);
+                if (!registerResult.Succeeded)
+                {
+                    result.Message = registerResult.ToString();
+                    result.IsSuccess = false;
+                    return result;
+                }
+
+                var upperRole = char.ToUpper(model.Role[0]) + model.Role.Substring(1);
+                var roles = _roleManager.FindByNameAsync(upperRole);
+                
+                if (roles == null)
+                {
+                    result.Message = "Role does not exist";
+                    result.IsSuccess = false;
+                    return result;
+                }
+
+                registerResult = await _userManager.AddToRoleAsync(user, upperRole);
+                if (!registerResult.Succeeded)
+                {
+                    result.Message = registerResult.ToString();
+                    result.IsSuccess = false;
+                    return result;
+                }
+
+                result.IsSuccess = true;
+                result.Message = "User Successfully created.";
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.Message = "Create user error:" + ex.Message + " " + ex.InnerException?.Message;
+                result.IsSuccess = false;
+                return result;
+            }
+        }
     }
 }

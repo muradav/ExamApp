@@ -28,6 +28,7 @@ namespace Exam.Business.Mapping
 
             #region AuthenticationMapper
             CreateMap<AppUser, RegistrationRequestDto>().ReverseMap();
+            CreateMap<AppUser, RegistrationUserDto>().ReverseMap();
             #endregion
         }
     }

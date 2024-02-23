@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Exam.Business.Managers;
 using Exam.Dto.Dtos.AccountDto;
+using Exam.Entities.Enums;
 using Exam.Entities.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,10 +36,19 @@ namespace Exam.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> CreateRole() 
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CreateRole(string role) 
         {
-            await AuthenticateManager.CreateRole();
-            return Ok("Roles Created");
+            var result = await AuthenticateManager.CreateRole(role);
+            return Ok(result);
+        }
+
+        [HttpPost("registrationUser")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RegistrationUser(RegistrationUserDto model)
+        {
+            var result = await AuthenticateManager.RegistrationUser(model);
+            return Ok(result);
         }
 
     }
