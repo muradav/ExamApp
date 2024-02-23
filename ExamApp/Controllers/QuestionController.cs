@@ -1,4 +1,8 @@
-﻿using Exam.DataAccess.Data;
+﻿using AutoMapper;
+using Exam.Business.Managers;
+using Exam.DataAccess.Data;
+using Exam.DataAccess.Repository.IRepository;
+using Exam.Dto.Dtos.ExamCategoryDto;
 using Exam.Dto.Dtos.QuestionDto;
 using Exam.Entities.Models;
 using ExcelDataReader;
@@ -13,12 +17,46 @@ namespace ExamApp.Controllers
     {
 
         private readonly IWebHostEnvironment _env;
+        private readonly QuestionManager QuestionManager;
         private readonly ApplicationDbContext _context;
 
-        public QuestionController(IWebHostEnvironment env, ApplicationDbContext context)
+        public QuestionController(IQuestionRepository repository, IMapper mapper, IWebHostEnvironment env, ApplicationDbContext context)
         {
+            QuestionManager = new QuestionManager(repository, mapper);
             _env = env;
             _context = context;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await QuestionManager.GetAll();
+
+            return Ok(result);
+        }
+
+        [HttpGet("id")]
+        public async Task<IActionResult> GetOne(int id)
+        {
+            var result = await QuestionManager.GetOne(id);
+
+            return Ok(result);
+        }
+
+        [HttpPut("id")]
+        public async Task<IActionResult> Update(int id, [FromBody] QuestionUpdateDto updateDto)
+        {
+            var result = await QuestionManager.Update(id, updateDto);
+
+            return Ok(result);
+        }
+
+        [HttpDelete("id")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await QuestionManager.Delete(id);
+
+            return Ok(result);
         }
 
         [HttpPost]
@@ -26,7 +64,7 @@ namespace ExamApp.Controllers
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-            if (questionDto.ExcelFile != null && questionDto.ExcelFile.Length >0)
+            if (questionDto.ExcelFile != null && questionDto.ExcelFile.Length > 0)
             {
 
                 string filename = "exam" + Guid.NewGuid().ToString() + Path.GetExtension(questionDto.ExcelFile.FileName);
@@ -64,12 +102,12 @@ namespace ExamApp.Controllers
                                 question.CorrectOption = reader.GetValue(6).ToString();
 
                                 question.ExamCategoryId = questionDto.ExamCategoryId;
-                                if (category!=null)
+                                if (category != null)
                                 {
                                     category.QuestionCount++;
                                 }
 
-                                question.ExcelUrl = filename; 
+                                question.ExcelUrl = filename;
 
                                 await _context.AddAsync(question);
                                 _context.SaveChanges();
