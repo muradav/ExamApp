@@ -25,6 +25,8 @@ namespace Exam.Entities.Models
         public int ExamCategoryId { get; set; }
         public ExamCategory ExamCategory { get; set; }
 
-        public List<Quiz> Quizzes { get; set; }
+        public List<Examination> Examinations { get; set; }
+
+        public List<ExaminationDetail> ExaminationDetails { get; set; }
     }
 }

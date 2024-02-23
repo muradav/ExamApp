@@ -14,5 +14,7 @@ namespace Exam.Entities.Models
         public string Surname { get; set; }
         [NotMapped]
         public string FullName { get { return $"{Name} {Surname}"; } }
+
+        public List<Examination> Examinations { get; set; }
     }
 }

@@ -29,14 +29,8 @@ namespace ExamApp.Controllers
                     .Take(examinationDto.RequestCount).ToList();
 
                 Examination examination = new();
-                examination.Examiner = examinationDto.Examiner;
                 examination.RequestCount = examinationDto.RequestCount;
                 examination.ExamCategoryId = examinationDto.ExamCategoryId;
-                examination.Quizzes = requestedQuestions.Select(question => 
-                {
-                    var quiz = new Quiz();
-                    return quiz;
-                }).ToList();
 
                 await _context.AddAsync(examination);
                 await _context.SaveChangesAsync();
