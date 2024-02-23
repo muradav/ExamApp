@@ -82,16 +82,16 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-SeedDatabase();
-
 app.MapControllers();
+
+await SeedDatabase();
 
 app.Run();
 
-void SeedDatabase()
+async Task SeedDatabase()
 {
     using (var scope = app.Services.CreateScope()){
         var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-        dbInitializer.Initialize();
+        await dbInitializer.Initialize();
     }
 }

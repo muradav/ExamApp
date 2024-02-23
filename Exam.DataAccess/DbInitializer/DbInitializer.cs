@@ -19,37 +19,30 @@ namespace Exam.DataAccess.DbInitializer
             _db = db;
         }
 
-        public async void Initialize()
+        public async Task Initialize()
         {
-            //migrations if they are not applied
-            try
-            {
-                if (_db.Database.GetPendingMigrations().Count() > 0)
-                {
-                    await _db.Database.MigrateAsync();
-                }
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-
             //create roles if they are not created
-            if (!_roleManager.RoleExistsAsync(Roles.Admin.ToString()).GetAwaiter().GetResult())
+            if (!await _roleManager.RoleExistsAsync(Roles.Admin.ToString()))
             {
-                _roleManager.CreateAsync(new IdentityRole(Roles.Examiner.ToString())).GetAwaiter().GetResult();
-                _roleManager.CreateAsync(new IdentityRole(Roles.Admin.ToString())).GetAwaiter().GetResult();
+                await _roleManager.CreateAsync(new IdentityRole(Roles.Examiner.ToString()));
+                await _roleManager.CreateAsync(new IdentityRole(Roles.Admin.ToString()));
 
                 //if roles are not created, then we will create admin user as well
-                _userManager.CreateAsync(new AppUser
-                {
-                    UserName = "admin_examApp",
-                    Email = "admin@gmail.com"
-                }, "Admin@12345").GetAwaiter().GetResult();
+                var userName = "admin_examApp";
+                var email = "admin@gmail.com";
+                var password = "Admin@12345";
 
-                AppUser user = await _userManager.FindByEmailAsync("admin@gmail.com");
-                _userManager.AddToRoleAsync(user, Roles.Admin.ToString()).GetAwaiter().GetResult();
+                if (await _userManager.FindByEmailAsync(email) == null)
+                {
+                    AppUser user = new()
+                    {
+                        UserName = userName,
+                        Email = email,
+                    };
+
+                    await _userManager.CreateAsync(user, password);
+                    await _userManager.AddToRoleAsync(user, Roles.Admin.ToString());
+                }
             }
 
             return;

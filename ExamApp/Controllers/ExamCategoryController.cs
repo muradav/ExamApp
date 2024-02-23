@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExamApp.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class ExamCategoryController : ControllerBase
@@ -20,7 +21,6 @@ namespace ExamApp.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Examiner")]
         public async Task<IActionResult> GetAll()
         {
             var result = await ExamCategoryManager.GetAll();
