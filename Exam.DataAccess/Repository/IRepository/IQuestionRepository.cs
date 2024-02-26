@@ -12,6 +12,7 @@ namespace Exam.DataAccess.Repository.IRepository
     {
         Task<List<Question>> GetAll(Expression<Func<Question, bool>> filter = null, bool tracked = true);
         Task<Question> GetOne(Expression<Func<Question, bool>> filter = null, bool tracked = true);
+        Task<List<Question>> GetRandom(int take = 0,Expression<Func<Question, bool>> filter = null, bool tracked = true);
         Task Add(Question entity);
         Task<bool> Update(Question entity);
         bool Remove(Question entity);

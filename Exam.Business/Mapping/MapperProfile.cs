@@ -21,12 +21,17 @@ namespace Exam.Business.Mapping
             #region ExaminationMapper
             CreateMap<Examination, ExaminationDto>().ReverseMap();
             CreateMap<Question, ExamQuestionDto>().ReverseMap();
+            CreateMap<Examination, ExaminationResponseDto>().ReverseMap();
             #endregion
 
             #region ExamCategoryMapper
             CreateMap<ExamCategory, ExamCategoryDto>().ReverseMap();
             CreateMap<ExamCategory, ExamCategoryCreateDto>().ReverseMap();
             CreateMap<ExamCategory, ExamCategoryUpdateDto>().ReverseMap();
+            #endregion
+
+            #region ExamDetailMapper
+            CreateMap<ExaminationDetail, ExamDetailsResponseDto>();
             #endregion
 
             #region AuthenticationMapper

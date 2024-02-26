@@ -10,6 +10,7 @@ namespace Exam.Entities.Models
     public class Examination : BaseEntity
     {
         public int RequestCount { get; set; }
+        public int CorrectAnswersCount { get; set; }
         public int Point { get; set; }
         public bool IsSuccess { get; set; }
 

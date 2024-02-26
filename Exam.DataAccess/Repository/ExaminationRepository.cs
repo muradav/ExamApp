@@ -14,20 +14,22 @@ namespace Exam.DataAccess.Repository
     public class ExaminationRepository : IExaminationRepository
     {
         private readonly ApplicationDbContext _db;
+        internal DbSet<Examination> dbSet;
 
         public ExaminationRepository(ApplicationDbContext db)
         {
             _db = db;
+            dbSet = _db.Examinations;
         }
 
         public async Task Add(Examination entity)
         {
-            await _db.AddAsync(entity);
+            await dbSet.AddAsync(entity);
         }
 
         public async Task<List<Examination>> GetAll(Expression<Func<Examination, bool>> filter = null, bool tracked = true)
         {
-            IQueryable<Examination> query = _db.Examinations;
+            IQueryable<Examination> query = dbSet;
 
             if (!tracked)
             {
@@ -42,7 +44,7 @@ namespace Exam.DataAccess.Repository
 
         public async Task<Examination> GetOne(Expression<Func<Examination, bool>> filter = null, bool tracked = true)
         {
-            IQueryable<Examination> query = _db.Examinations;
+            IQueryable<Examination> query = dbSet;
 
             if (!tracked)
             {
@@ -52,6 +54,25 @@ namespace Exam.DataAccess.Repository
             {
                 query = query.Where(filter);
             }
+            return await query.FirstOrDefaultAsync();
+        }
+
+        public async Task<Examination> GetOneWithInclude(Expression<Func<Examination, bool>> filter = null, Func<IQueryable<Examination>, IQueryable<Examination>> includePredicate = null, bool tracked = true)
+        {
+            IQueryable<Examination> query = dbSet;
+            if (!tracked)
+            {
+                query = query.AsNoTracking();
+            }
+            if (includePredicate != null)
+            {
+                query = includePredicate(query);
+            }
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
             return await query.FirstOrDefaultAsync();
         }
 
