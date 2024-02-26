@@ -89,13 +89,14 @@ namespace Exam.Business.Managers
                 var examination = await _repo.GetOneWithInclude(filter: x => x.Id == requestDto.ExaminationId,
                                                                 includePredicate: x => x.Include(x => x.Questions));
 
-                ExaminationDetail examDetail = new();
                 List<ExaminationDetail> examDetails = new();
 
                 foreach (var question in examination.Questions)
                 {
+                    ExaminationDetail examDetail = new();
+
                     var requestPair = requestDto.Answers.FirstOrDefault(x => x.QuestionId == question.Id);
-                    if (requestPair.ExaminerAnswer == question.CorrectOption)
+                    if (requestPair.ExaminerAnswer.ToLower() == question.CorrectOption.ToLower())
                     {
                         examDetail.isCorrect = true;
                         examination.CorrectAnswersCount++;
@@ -121,7 +122,7 @@ namespace Exam.Business.Managers
                     result.Data = "You failed";
                 }
 
-                await _repo.Add(examination);
+                await _repo.Update(examination);
                 await _repo.SaveAsync();
 
                 
