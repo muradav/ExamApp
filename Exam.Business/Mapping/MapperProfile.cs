@@ -20,6 +20,7 @@ namespace Exam.Business.Mapping
 
             #region ExaminationMapper
             CreateMap<Examination, ExaminationDto>().ReverseMap();
+            CreateMap<Question, ExamQuestionDto>().ReverseMap();
             #endregion
 
             #region ExamCategoryMapper
