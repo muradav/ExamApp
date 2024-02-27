@@ -18,6 +18,7 @@ namespace Exam.DataAccess.Data
 
         public DbSet<ExamCategory> ExamCategories { get; set; }
         public DbSet<Question> Questions { get; set; }
+        public DbSet<Answer> Answers { get; set; }
         public DbSet<Examination> Examinations { get; set; }
         public DbSet<ExaminationDetail> ExaminationDetails { get; set; }
 

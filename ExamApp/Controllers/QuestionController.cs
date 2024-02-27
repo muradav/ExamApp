@@ -7,6 +7,7 @@ using Exam.Dto.Dtos.QuestionDto;
 using Exam.Entities.Models;
 using ExcelDataReader;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Text;
 
 namespace ExamApp.Controllers
@@ -19,12 +20,28 @@ namespace ExamApp.Controllers
         private readonly IWebHostEnvironment _env;
         private readonly QuestionManager QuestionManager;
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
         public QuestionController(IQuestionRepository repository, IMapper mapper, IWebHostEnvironment env, ApplicationDbContext context)
         {
             QuestionManager = new QuestionManager(repository, mapper);
             _env = env;
             _context = context;
+            _mapper = mapper;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] QuestionCreateDto questionCreateDto)
+        {
+            var existQuestion = await _context.Questions.FirstOrDefaultAsync(x=> x.Content.ToLower() == questionCreateDto.Content.ToLower());
+            if (existQuestion != null)
+            {
+                return BadRequest();
+            }
+
+            Question question = _mapper.Map<Question>(existQuestion);
+
+            return Ok();
         }
 
         [HttpGet]
@@ -95,11 +112,11 @@ namespace ExamApp.Controllers
                                 var category = _context.ExamCategories.FirstOrDefault(c => c.Id == questionDto.ExamCategoryId);
 
                                 question.Content = reader.GetValue(1).ToString();
-                                question.OptionA = reader.GetValue(2).ToString();
-                                question.OptionB = reader.GetValue(3).ToString();
-                                question.OptionC = reader.GetValue(4).ToString();
-                                question.OptionD = reader.GetValue(5).ToString();
-                                question.CorrectOption = reader.GetValue(6).ToString();
+                                //question.OptionA = reader.GetValue(2).ToString();
+                                //question.OptionB = reader.GetValue(3).ToString();
+                                //question.OptionC = reader.GetValue(4).ToString();
+                                //question.OptionD = reader.GetValue(5).ToString();
+                                //question.CorrectOption = reader.GetValue(6).ToString();
 
                                 question.ExamCategoryId = questionDto.ExamCategoryId;
                                 if (category != null)

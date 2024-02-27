@@ -36,11 +36,11 @@ namespace Exam.Business.Services
                             //var category = _context.ExamCategories.FirstOrDefault(c => c.Id == questionDto.ExamCategoryId);
 
                             question.Content = reader.GetValue(1).ToString();
-                            question.OptionA = reader.GetValue(2).ToString();
-                            question.OptionB = reader.GetValue(3).ToString();
-                            question.OptionC = reader.GetValue(4).ToString();
-                            question.OptionD = reader.GetValue(5).ToString();
-                            question.CorrectOption = reader.GetValue(6).ToString();
+                            //question.OptionA = reader.GetValue(2).ToString();
+                            //question.OptionB = reader.GetValue(3).ToString();
+                            //question.OptionC = reader.GetValue(4).ToString();
+                            //question.OptionD = reader.GetValue(5).ToString();
+                            //question.CorrectOption = reader.GetValue(6).ToString();
 
                             //question.ExamCategoryId = questionDto.ExamCategoryId;
                             //category.QuestionCount++;

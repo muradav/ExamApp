@@ -96,11 +96,11 @@ namespace Exam.Business.Managers
                     ExaminationDetail examDetail = new();
 
                     var requestPair = requestDto.Answers.FirstOrDefault(x => x.QuestionId == question.Id);
-                    if (requestPair.ExaminerAnswer.ToLower() == question.CorrectOption.ToLower())
-                    {
-                        examDetail.isCorrect = true;
-                        examination.CorrectAnswersCount++;
-                    }
+                    //if (requestPair.ExaminerAnswer.ToLower() == question.CorrectOption.ToLower())
+                    //{
+                    //    examDetail.isCorrect = true;
+                    //    examination.CorrectAnswersCount++;
+                    //}
                     examDetail.Answer = requestPair.ExaminerAnswer;
                     examDetail.QuestionId = question.Id;
                     examDetail.ExaminationId = examination.Id;
