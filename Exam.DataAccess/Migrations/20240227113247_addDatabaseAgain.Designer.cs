@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Exam.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240223145944_changeExaminationExaminationDetailQuestionRelation")]
-    partial class changeExaminationExaminationDetailQuestionRelation
+    [Migration("20240227113247_addDatabaseAgain")]
+    partial class addDatabaseAgain
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,45 @@ namespace Exam.DataAccess.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Exam.Entities.Models.Answer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AnswerContent")
+                        .HasColumnType("text");
+
+                    b.Property<string>("AnswerKey")
+                        .HasColumnType("text");
+
+                    b.Property<DateOnly>("CreatedAt")
+                        .HasColumnType("date");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsCorrect")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateOnly>("ModifiedAt")
+                        .HasColumnType("date");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionId");
+
+                    b.ToTable("Answers");
+                });
 
             modelBuilder.Entity("Exam.Entities.Models.AppUser", b =>
                 {
@@ -126,7 +165,7 @@ namespace Exam.DataAccess.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateOnly(2024, 2, 23),
+                            CreatedAt = new DateOnly(2024, 2, 27),
                             IsDeleted = false,
                             ModifiedAt = new DateOnly(1, 1, 1),
                             Name = "General Knowledge",
@@ -135,7 +174,7 @@ namespace Exam.DataAccess.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateOnly(2024, 2, 23),
+                            CreatedAt = new DateOnly(2024, 2, 27),
                             IsDeleted = false,
                             ModifiedAt = new DateOnly(1, 1, 1),
                             Name = "Mathematics",
@@ -144,7 +183,7 @@ namespace Exam.DataAccess.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateOnly(2024, 2, 23),
+                            CreatedAt = new DateOnly(2024, 2, 27),
                             IsDeleted = false,
                             ModifiedAt = new DateOnly(1, 1, 1),
                             Name = "History",
@@ -159,6 +198,9 @@ namespace Exam.DataAccess.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CorrectAnswersCount")
+                        .HasColumnType("integer");
 
                     b.Property<DateOnly>("CreatedAt")
                         .HasColumnType("date");
@@ -179,9 +221,6 @@ namespace Exam.DataAccess.Migrations
                         .HasColumnType("date");
 
                     b.Property<int>("Point")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RequestCount")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -228,7 +267,7 @@ namespace Exam.DataAccess.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("Quizzes");
+                    b.ToTable("ExaminationDetails");
                 });
 
             modelBuilder.Entity("Exam.Entities.Models.Question", b =>
@@ -242,9 +281,6 @@ namespace Exam.DataAccess.Migrations
                     b.Property<string>("Content")
                         .HasColumnType("text");
 
-                    b.Property<string>("CorrectOption")
-                        .HasColumnType("text");
-
                     b.Property<DateOnly>("CreatedAt")
                         .HasColumnType("date");
 
@@ -254,23 +290,14 @@ namespace Exam.DataAccess.Migrations
                     b.Property<string>("ExcelUrl")
                         .HasColumnType("text");
 
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("text");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
                     b.Property<DateOnly>("ModifiedAt")
                         .HasColumnType("date");
-
-                    b.Property<string>("OptionA")
-                        .HasColumnType("text");
-
-                    b.Property<string>("OptionB")
-                        .HasColumnType("text");
-
-                    b.Property<string>("OptionC")
-                        .HasColumnType("text");
-
-                    b.Property<string>("OptionD")
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -426,6 +453,17 @@ namespace Exam.DataAccess.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Exam.Entities.Models.Answer", b =>
+                {
+                    b.HasOne("Exam.Entities.Models.Question", "Question")
+                        .WithMany("Answers")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Question");
+                });
+
             modelBuilder.Entity("Exam.Entities.Models.Examination", b =>
                 {
                     b.HasOne("Exam.Entities.Models.ExamCategory", "ExamCategory")
@@ -551,6 +589,8 @@ namespace Exam.DataAccess.Migrations
 
             modelBuilder.Entity("Exam.Entities.Models.Question", b =>
                 {
+                    b.Navigation("Answers");
+
                     b.Navigation("ExaminationDetails");
                 });
 #pragma warning restore 612, 618

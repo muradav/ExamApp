@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,17 +12,14 @@ namespace Exam.Dto.Dtos.QuestionDto
     {
         public string Content { get; set; }
         public int ExamCategoryId { get; set; }
-
         public IFormFile Image { get; set; }
         public List<AnswerCreateDto> Answers { get; set; }
     }
 
     public class AnswerCreateDto
     {
-        public string AnswerKey { get; set; }
-        public string AnswerContent { get; set; }
-        public string IsCorrect { get; set; }
-        public int QuestionId { get; set; }
+        public string Content { get; set; }
+        public bool IsCorrect { get; set; } = false;
         public IFormFile Image { get; set; }
     }
 }

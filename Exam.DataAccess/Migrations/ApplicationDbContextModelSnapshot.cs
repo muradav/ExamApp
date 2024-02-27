@@ -30,10 +30,7 @@ namespace Exam.DataAccess.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AnswerContent")
-                        .HasColumnType("text");
-
-                    b.Property<string>("AnswerKey")
+                    b.Property<string>("Content")
                         .HasColumnType("text");
 
                     b.Property<DateOnly>("CreatedAt")
@@ -42,8 +39,8 @@ namespace Exam.DataAccess.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("text");
 
-                    b.Property<string>("IsCorrect")
-                        .HasColumnType("text");
+                    b.Property<bool>("IsCorrect")
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");

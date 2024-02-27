@@ -10,9 +10,8 @@ namespace Exam.Entities.Models
 {
     public class Answer : BaseEntity
     {
-        public string AnswerKey { get; set; }
-        public string AnswerContent { get; set; }
-        public string IsCorrect { get; set; }
+        public string Content { get; set; }
+        public bool IsCorrect { get; set; }
         public string ImageUrl { get; set; }
 
         [NotMapped]

@@ -32,6 +32,8 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\excel\" />
+    <Folder Include="wwwroot\images\answerImages\" />
+    <Folder Include="wwwroot\images\questionImages\" />
   </ItemGroup>
 
 </Project>

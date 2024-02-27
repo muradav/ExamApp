@@ -87,25 +87,28 @@ namespace Exam.Business.Managers
             try
             {
                 var examination = await _repo.GetOneWithInclude(filter: x => x.Id == requestDto.ExaminationId,
-                                                                includePredicate: x => x.Include(x => x.Questions));
+                                                                includePredicate: x => x.Include(x => x.Questions).ThenInclude(x => x.Answers));
 
                 List<ExaminationDetail> examDetails = new();
 
                 foreach (var question in examination.Questions)
                 {
-                    ExaminationDetail examDetail = new();
+                    foreach (var answer in question.Answers)
+                    {
+                        ExaminationDetail examDetail = new();
 
-                    var requestPair = requestDto.Answers.FirstOrDefault(x => x.QuestionId == question.Id);
-                    //if (requestPair.ExaminerAnswer.ToLower() == question.CorrectOption.ToLower())
-                    //{
-                    //    examDetail.isCorrect = true;
-                    //    examination.CorrectAnswersCount++;
-                    //}
-                    examDetail.Answer = requestPair.ExaminerAnswer;
-                    examDetail.QuestionId = question.Id;
-                    examDetail.ExaminationId = examination.Id;
+                        var requestPair = requestDto.Answers.FirstOrDefault(x => x.QuestionId == question.Id);
+                        if (requestPair.ExaminerAnswer.ToLower() == answer.Content.ToLower() && answer.IsCorrect == true)
+                        {
+                            examDetail.isCorrect = true;
+                            examination.CorrectAnswersCount++;
+                        }
+                        examDetail.Answer = requestPair.ExaminerAnswer;
+                        examDetail.QuestionId = question.Id;
+                        examDetail.ExaminationId = examination.Id;
 
-                    examDetails.Add(examDetail);
+                        examDetails.Add(examDetail);
+                    }
                 }
 
                 await _detailRepo.AddRange(examDetails);
@@ -128,10 +131,10 @@ namespace Exam.Business.Managers
                 
                 result.IsSuccess = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                result.Message = ex.Message.ToString();
             }
             return result;
         }
