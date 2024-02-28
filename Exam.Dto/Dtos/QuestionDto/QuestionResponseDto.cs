@@ -8,13 +8,17 @@ namespace Exam.Dto.Dtos.QuestionDto
 {
     public class QuestionResponseDto
     {
-        public int Id { get; set; }
-        public string Content { get; set; }
-        public string OptionA { get; set; }
-        public string OptionB { get; set; }
-        public string OptionC { get; set; }
-        public string OptionD { get; set; }
         public int ExamCategoryId { get; set; }
+        public string Content { get; set; }
+        public string ImagerUrl { get; set; }
+        public List<AnswerResponseDto> Answers { get; set; }
 
+    }
+
+    public class AnswerResponseDto
+    {
+        public string Content { get; set; }
+        public bool IsCorrect { get; set; } = false;
+        public string ImageUrl { get; set; }
     }
 }

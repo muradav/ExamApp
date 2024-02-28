@@ -14,13 +14,14 @@ namespace Exam.Business.Mapping
         {
             #region QuestionMapper
             CreateMap<Question, QuestionDto>().ReverseMap();
+            CreateMap<Answer, AnswerResponseDto>().ReverseMap();
             CreateMap<Question, QuestionResponseDto>().ReverseMap();
             CreateMap<Question, QuestionUpdateDto>().ReverseMap();
+            CreateMap<Answer, AnswerCreateDto>().ReverseMap();
+            CreateMap<Question, QuestionCreateDto>().ReverseMap();
             #endregion
 
             #region ExaminationMapper
-            CreateMap<Answer, AnswerCreateDto>().ReverseMap();
-            CreateMap<Question, QuestionCreateDto>().ReverseMap();
             CreateMap<Examination, ExaminationDto>().ReverseMap();
             CreateMap<Question, ExamQuestionDto>().ReverseMap();
             CreateMap<Examination, ExaminationResponseDto>().ReverseMap();

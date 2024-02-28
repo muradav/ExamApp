@@ -14,9 +14,6 @@ namespace Exam.Entities.Models
         public bool IsCorrect { get; set; }
         public string ImageUrl { get; set; }
 
-        [NotMapped]
-        public IFormFile Image { get; set; }
-
         public int QuestionId { get; set; }
         public Question Question { get; set; }
     }

@@ -14,11 +14,6 @@ namespace Exam.Entities.Models
         public string ImageUrl { get; set; }
         public string ExcelUrl { get; set; }
 
-        [NotMapped]
-        public IFormFile ExcelFile { get; set; }
-        [NotMapped]
-        public IFormFile Image { get; set; }
-
         public int ExamCategoryId { get; set; }
         public ExamCategory ExamCategory { get; set; }
 

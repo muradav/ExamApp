@@ -126,9 +126,9 @@ namespace Exam.Business.Managers
             return result;
         }
 
-        public async Task<ResultModel<bool>> Create(QuestionCreateDto questionCreateDto)
+        public async Task<ResultModel<QuestionResponseDto>> Create(QuestionCreateDto questionCreateDto)
         {
-            var result = new ResultModel<bool>();
+            var result = new ResultModel<QuestionResponseDto>();
             try
             {
                 var existQuestion = await _repo.GetOne(x => x.Content.ToLower() == questionCreateDto.Content.ToLower(), false);
@@ -155,37 +155,35 @@ namespace Exam.Business.Managers
                         result.IsSuccess = false;
                         return result;
                     }
-                    question.ImageUrl = question.Image.SaveImage(_env, "images/questionImages");
-
-                    foreach (var answerDto in questionCreateDto.Answers)
+                    question.ImageUrl = questionCreateDto.Image.SaveImage(_env, "images/questionImages");
+                }
+                for (int i = 0; i < questionCreateDto.Answers.Count; i++)
+                {
+                    if (questionCreateDto.Answers[i].Image != null)
                     {
-                        if (answerDto.Image != null)
+                        if (!questionCreateDto.Answers[i].Image.IsImage())
                         {
-                            if (!answerDto.Image.IsImage())
-                            {
-                                result.Message = "Image format is not valid";
-                                result.IsSuccess = false;
-                                return result;
-                            }
-                            if (answerDto.Image.ValidSize(20))
-                            {
-                                result.Message = "Image is not valid";
-                                result.IsSuccess = false;
-                                return result;                    
-                            }
-
-                            foreach (var answer in question.Answers)
-                            {
-                                answer.ImageUrl = answerDto.Image.SaveImage(_env, "images/answerImages");
-                            }
+                            result.Message = "Image format is not valid";
+                            result.IsSuccess = false;
+                            return result;
                         }
+                        if (questionCreateDto.Answers[i].Image.ValidSize(20))
+                        {
+                            result.Message = "Image is not valid";
+                            result.IsSuccess = false;
+                            return result;
+                        }
+
+                        question.Answers[i].ImageUrl = questionCreateDto.Answers[i].Image.SaveImage(_env, "images/answerImages");
                     }
                 }
 
                 await _repo.Add(question);
                 await _repo.SaveAsync();
 
-                result.Data = question;
+                QuestionResponseDto questionResponse = _mapper.Map<QuestionResponseDto>(question);
+
+                result.Data = questionResponse;
                 result.IsSuccess = true;
             }
             catch (Exception ex)
