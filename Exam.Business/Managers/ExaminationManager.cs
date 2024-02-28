@@ -65,7 +65,8 @@ namespace Exam.Business.Managers
             var result = new ResultModel<Examination>();
             try
             {
-                var examination = await _repo.GetOneWithInclude(filter: x => x.Id == id, includePredicate: x => x.Include(e => e.Questions));
+                var examination = await _repo.GetOneWithInclude(filter: x => x.Id == id, 
+                                includePredicate: x => x.Include(e => e.Questions).ThenInclude(e => e.Answers));
 
                 ExaminationResponseDto response = _mapper.Map<ExaminationResponseDto>(examination);
 
@@ -93,22 +94,22 @@ namespace Exam.Business.Managers
 
                 foreach (var question in examination.Questions)
                 {
+                    ExaminationDetail examDetail = new();
+                    var requestPair = requestDto.Answers.FirstOrDefault(x => x.QuestionId == question.Id);
+
                     foreach (var answer in question.Answers)
                     {
-                        ExaminationDetail examDetail = new();
-
-                        var requestPair = requestDto.Answers.FirstOrDefault(x => x.QuestionId == question.Id);
                         if (requestPair.ExaminerAnswer.ToLower() == answer.Content.ToLower() && answer.IsCorrect == true)
                         {
                             examDetail.isCorrect = true;
                             examination.CorrectAnswersCount++;
                         }
-                        examDetail.Answer = requestPair.ExaminerAnswer;
-                        examDetail.QuestionId = question.Id;
-                        examDetail.ExaminationId = examination.Id;
-
-                        examDetails.Add(examDetail);
                     }
+                    examDetail.Answer = requestPair.ExaminerAnswer;
+                    examDetail.QuestionId = question.Id;
+                    examDetail.ExaminationId = examination.Id;
+
+                    examDetails.Add(examDetail);
                 }
 
                 await _detailRepo.AddRange(examDetails);
