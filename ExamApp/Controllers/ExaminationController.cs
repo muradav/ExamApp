@@ -2,15 +2,15 @@
 using Exam.Business.Managers;
 using Exam.DataAccess.Data;
 using Exam.DataAccess.Repository.IRepository;
-using Exam.Dto.AppModel;
 using Exam.Dto.Dtos.ExaminationDto;
-using Exam.Entities.Models;
+using Exam.Entities.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace ExamApp.Controllers
 {
+    [Authorize(Roles = "Examiner")]
     [Route("api/[controller]")]
     [ApiController]
     public class ExaminationController : ControllerBase

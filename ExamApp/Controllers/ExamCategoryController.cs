@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExamApp.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Teacher")]
     [Route("api/[controller]")]
     [ApiController]
     public class ExamCategoryController : ControllerBase
