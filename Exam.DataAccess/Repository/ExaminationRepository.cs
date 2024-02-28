@@ -27,13 +27,17 @@ namespace Exam.DataAccess.Repository
             await dbSet.AddAsync(entity);
         }
 
-        public async Task<List<Examination>> GetAll(Expression<Func<Examination, bool>> filter = null, bool tracked = true)
+        public async Task<List<Examination>> GetAll(Expression<Func<Examination, bool>> filter = null, Func<IQueryable<Examination>, IQueryable<Examination>> includePredicate = null, bool tracked = true)
         {
             IQueryable<Examination> query = dbSet;
 
             if (!tracked)
             {
                 query = query.AsNoTracking();
+            }
+            if (includePredicate != null)
+            {
+                query = includePredicate(query);
             }
             if (filter != null)
             {

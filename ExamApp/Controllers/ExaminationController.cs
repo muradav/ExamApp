@@ -51,5 +51,14 @@ namespace ExamApp.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("ExportExam")]
+        public async Task<IActionResult> GetExamDetail()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var result = await ExaminationManager.ExportExamDetail(userId);
+
+            return Ok(result);
+        }
     }
 }

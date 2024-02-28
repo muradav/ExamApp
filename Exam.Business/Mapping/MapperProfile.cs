@@ -26,6 +26,8 @@ namespace Exam.Business.Mapping
             CreateMap<Answer, ExamAnswerDto>().ReverseMap();
             CreateMap<Question, ExamQuestionDto>().ReverseMap();
             CreateMap<Examination, ExaminationResponseDto>().ReverseMap();
+            CreateMap<Examination, ExamDetailExportDto>().ForMember(d=> d.ExamCategory, map => map.MapFrom(s => s.ExamCategory.Name))
+                            .ForMember(d => d.InCorrectAnswersCount, map => map.MapFrom(s => s.Questions.Count() - s.CorrectAnswersCount));
             #endregion
 
             #region ExamCategoryMapper

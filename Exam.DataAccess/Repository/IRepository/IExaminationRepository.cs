@@ -10,7 +10,7 @@ namespace Exam.DataAccess.Repository.IRepository
 {
     public interface IExaminationRepository
     {
-        Task<List<Examination>> GetAll(Expression<Func<Examination, bool>> filter = null, bool tracked = true);
+        Task<List<Examination>> GetAll(Expression<Func<Examination, bool>> filter = null, Func<IQueryable<Examination>, IQueryable<Examination>> includePredicate = null, bool tracked = true);
         Task<Examination> GetOne(Expression<Func<Examination, bool>> filter = null, bool tracked = true); 
         Task<Examination> GetOneWithInclude(Expression<Func<Examination, bool>> filter = null,
                     Func<IQueryable<Examination>, IQueryable<Examination>> includePredicate = null, bool tracked = true);
