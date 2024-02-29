@@ -55,15 +55,37 @@ namespace Exam.Business.Managers
             return result;
         }
 
-        public async Task<ResultModel<Examination>> GetOne(int id)
+        public async Task<ResultModel<ExaminationResponseDto>> GetOne(int id)
         {
-            var result = new ResultModel<Examination>();
+            var result = new ResultModel<ExaminationResponseDto>();
             try
             {
                 var examination = await _repo.GetOneWithInclude(filter: x => x.Id == id, 
                                 includePredicate: x => x.Include(e => e.Questions).ThenInclude(e => e.Answers));
 
                 ExaminationResponseDto response = _mapper.Map<ExaminationResponseDto>(examination);
+
+                result.Data = response;
+                result.IsSuccess = true;
+            }
+            catch (Exception ex)
+            {
+
+                result.Message = ex.Message.ToString();
+            }
+
+            return result;
+        }
+
+        public async Task<ResultModel<List<ExaminationResponseDto>>> GetAll(string userId)
+        {
+            var result = new ResultModel<List<ExaminationResponseDto>>();
+            try
+            {
+                var examination = await _repo.GetAll(filter: x => x.ExaminerId == userId,
+                                includePredicate: x => x.Include(e => e.Questions).ThenInclude(e => e.Answers));
+
+                List<ExaminationResponseDto> response = _mapper.Map<List<ExaminationResponseDto>>(examination);
 
                 result.Data = response;
                 result.IsSuccess = true;

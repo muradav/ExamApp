@@ -40,6 +40,14 @@ namespace ExamApp.Controllers
             return Ok(result);
         }
 
+        [HttpGet("GetAllExams")]
+        public async Task<IActionResult> GetAll()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var result = await ExaminationManager.GetAll(userId);
+
+            return Ok(result);
+        }
 
         [HttpPost("CheckExam")]
         public async Task<IActionResult> CheckExam([FromBody]CheckExamRequestDto requestDto)
@@ -49,7 +57,7 @@ namespace ExamApp.Controllers
             return Ok(result);
         }
 
-        [HttpPost("ExportExam")]
+        [HttpGet("ExportExam")]
         public async Task<IActionResult> GetExamDetail()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
