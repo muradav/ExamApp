@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ExamApp.Controllers
 {
-    [Authorize(Roles = "Admin,Teacher")]
+    [Authorize(Roles = "Admin,Examiner")]
     [Route("api/[controller]")]
     [ApiController]
     public class QuestionController : ControllerBase

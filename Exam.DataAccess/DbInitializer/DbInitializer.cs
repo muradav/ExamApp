@@ -24,7 +24,7 @@ namespace Exam.DataAccess.DbInitializer
             //create roles if they are not created
             if (!await _roleManager.RoleExistsAsync(Roles.Admin.ToString()))
             {
-                await _roleManager.CreateAsync(new IdentityRole(Roles.Examiner.ToString()));
+                await _roleManager.CreateAsync(new IdentityRole(Roles.Examinee.ToString()));
                 await _roleManager.CreateAsync(new IdentityRole(Roles.Admin.ToString()));
 
                 //if roles are not created, then we will create admin user as well

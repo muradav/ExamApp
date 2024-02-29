@@ -11,7 +11,7 @@ using System.Security.Claims;
 
 namespace ExamApp.Controllers
 {
-    [Authorize(Roles = "Examiner")]
+    [Authorize(Roles = "Examinee")]
     [Route("api/[controller]")]
     [ApiController]
     public class ExaminationController : ControllerBase

@@ -56,7 +56,7 @@ namespace Exam.Business.Managers
                     return result;
                 }
 
-                registerResult = await _userManager.AddToRoleAsync(user, "Examiner");
+                registerResult = await _userManager.AddToRoleAsync(user, "Examinee");
                 if (!registerResult.Succeeded)
                 {
                     result.Message = registerResult.ToString();

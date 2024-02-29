@@ -9,6 +9,6 @@ namespace Exam.Entities.Enums
     public enum Roles
     {
         Admin,
-        Examiner
+        Examinee
     }
 }
