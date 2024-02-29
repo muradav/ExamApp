@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Exam.Business.Services;
 using Exam.DataAccess.Repository.IRepository;
 using Exam.Dto.AppModel;
 using Exam.Dto.Dtos.ExaminationDto;
 using Exam.Entities.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using System.Security.Claims;
@@ -133,68 +135,26 @@ namespace Exam.Business.Managers
             return result;
         }
 
-        public async Task<ResultModel<ExamDetailExportDto>> ExportExamDetail(string userId)
+        public async Task<FileContentResult> ExportData(string userId, ControllerBase controller)
         {
-            var result = new ResultModel<ExamDetailExportDto>();
 
             try
             {
                 var examinations = await _repo.GetAll(x => x.ExaminerId == userId, 
                                         includePredicate: x => x.Include(e => e.Questions).Include(e => e.ExamCategory));
-                List<ExamDetailExportDto> exportDetailDto = _mapper.Map<List<ExamDetailExportDto>>(examinations);
 
+                List<ExamDetailExportDto>  exportDetailDto = _mapper.Map<List<ExamDetailExportDto>>(examinations);
 
-                
+                var export = exportDetailDto.ExportData(controller);
 
-                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                return export;
 
-                using (var package = new ExcelPackage())
-                {
-                    ExcelWorksheet ws = package.Workbook.Worksheets.Add("Report");
-
-                    ws.Cells["B3"].Value = "Examination";
-                    ws.Cells["C3"].Value = "Examination Date";
-                    ws.Cells["D3"].Value = "Correct Answers Count";
-                    ws.Cells["E3"].Value = "Incorrect Answers Count";
-                    ws.Cells["F3"].Value = "Point";
-
-                    int rowStart = 4;
-                    foreach (var examDetail in exportDetailDto)
-                    {
-                        ws.Cells[string.Format("B{0}", rowStart)].Value = examDetail.ExamCategory;
-                        ws.Cells[string.Format("C{0}", rowStart)].Value = examDetail.CreatedAt;
-                        ws.Cells[string.Format("D{0}", rowStart)].Value = examDetail.CorrectAnswersCount;
-                        ws.Cells[string.Format("E{0}", rowStart)].Value = examDetail.InCorrectAnswersCount;
-                        ws.Cells[string.Format("F{0}", rowStart)].Value = examDetail.Point;
-
-                        rowStart++;
-                    }
-
-
-                    using (var stream = new MemoryStream())
-                    {
-                        package.SaveAs(stream);
-                        var content = stream.ToArray();
-                        result.Data = true;
-                        result.IsSuccess = true;
-                        return File(content,
-                                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                                    "StudenExams.xlsx");
-                    }
-
-                }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                result.Message = ex.Message.ToString();
+                throw;
             }
 
-            return result;
-        }
-
-        private ResultModel<ExamDetailExportDto> File(byte[] content, string v1, string v2)
-        {
-            throw new NotImplementedException();
         }
     }
 }

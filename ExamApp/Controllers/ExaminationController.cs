@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Exam.Business.Managers;
+using Exam.Business.Services;
 using Exam.DataAccess.Data;
 using Exam.DataAccess.Repository.IRepository;
 using Exam.Dto.Dtos.ExaminationDto;
@@ -16,14 +17,10 @@ namespace ExamApp.Controllers
     public class ExaminationController : ControllerBase
     {
         private readonly ExaminationManager ExaminationManager;
-        private readonly ApplicationDbContext _context;
-        private readonly IMapper _mapper;
 
         public ExaminationController(ApplicationDbContext context,IExaminationRepository examRepo,IQuestionRepository questionRepo, IExaminationDetailRepository detailRepo, IMapper mapper)
         {
             ExaminationManager = new(examRepo,questionRepo, detailRepo, mapper);
-            _context = context;
-            _mapper = mapper;
         }
 
         [HttpPost]
@@ -52,13 +49,13 @@ namespace ExamApp.Controllers
             return Ok(result);
         }
 
-        [HttpGet("ExportExam")]
+        [HttpPost("ExportExam")]
         public async Task<IActionResult> GetExamDetail()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var result = await ExaminationManager.ExportExamDetail(userId);
+            var result = await ExaminationManager.ExportData(userId, this);
 
-            return Ok(result);
+            return result;
         }
     }
 }

@@ -1,18 +1,9 @@
 ﻿using AutoMapper;
 using Exam.Business.Managers;
-using Exam.Business.Services;
-using Exam.DataAccess.Data;
 using Exam.DataAccess.Repository.IRepository;
-using Exam.Dto.AppModel;
-using Exam.Dto.Dtos.ExamCategoryDto;
 using Exam.Dto.Dtos.QuestionDto;
-using Exam.Entities.Models;
-using ExcelDataReader;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using System.Text;
 
 namespace ExamApp.Controllers
 {
