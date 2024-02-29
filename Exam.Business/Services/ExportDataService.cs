@@ -14,42 +14,52 @@ namespace Exam.Business.Services
                 {
                     var worksheet = workbook.Worksheets.Add("Examination Report");
 
-                    worksheet.Range("A1:E1").Merge();
+                    worksheet.Range("A1:F1").Merge();
                     worksheet.Cell(1, 1).Value = "Report";
                     worksheet.Cell(1, 1).Style.Font.Bold = true;
                     worksheet.Cell(1, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                     worksheet.Cell(1, 1).Style.Font.FontSize = 30;
 
-                    worksheet.Cell(2, 1).Value = "Examination";
-                    worksheet.Cell(2, 2).Value = "Examination Date";
-                    worksheet.Cell(2, 3).Value = "Correct Answers Count";
-                    worksheet.Cell(2, 4).Value = "Incorrect Answers Count";
-                    worksheet.Cell(2, 5).Value = "Point";
-                    worksheet.Range("A2:E2").Style.Fill.BackgroundColor = XLColor.Alizarin;
+                    worksheet.Cell(2, 1).Value = "№";
+                    worksheet.Cell(2, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    worksheet.Cell(2, 2).Value = "Examination";
+                    worksheet.Cell(2, 2).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    worksheet.Cell(2, 3).Value = "Examination Date";
+                    worksheet.Cell(2, 3).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    worksheet.Cell(2, 4).Value = "Correct Answers Count";
+                    worksheet.Cell(2, 4).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    worksheet.Cell(2, 5).Value = "Incorrect Answers Count";
+                    worksheet.Cell(2, 5).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    worksheet.Cell(2, 6).Value = "Point";
+                    worksheet.Cell(2, 6).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    worksheet.Range("A2:F2").Style.Fill.BackgroundColor = XLColor.Alizarin;
 
-
+                    int rowNumber = 1;
                     int rowStart = 3;
                     foreach (var detail in model)
                     {
-                        worksheet.Cell(rowStart, 1).Value = detail.ExamCategory;
+                        worksheet.Cell(rowStart, 1).Value = rowNumber;
                         worksheet.Cell(rowStart, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                        worksheet.Cell(rowStart, 2).Value = detail.CreatedAt.ToString();
+                        worksheet.Cell(rowStart, 2).Value = detail.ExamCategory;
                         worksheet.Cell(rowStart, 2).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                        worksheet.Cell(rowStart, 3).Value = detail.CorrectAnswersCount;
+                        worksheet.Cell(rowStart, 3).Value = detail.CreatedAt.ToString();
                         worksheet.Cell(rowStart, 3).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                        worksheet.Cell(rowStart, 4).Value = detail.InCorrectAnswersCount;
+                        worksheet.Cell(rowStart, 4).Value = detail.CorrectAnswersCount;
                         worksheet.Cell(rowStart, 4).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                        worksheet.Cell(rowStart, 5).Value = detail.Point;
+                        worksheet.Cell(rowStart, 5).Value = detail.InCorrectAnswersCount;
                         worksheet.Cell(rowStart, 5).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                        worksheet.Cell(rowStart, 6).Value = detail.Point;
+                        worksheet.Cell(rowStart, 6).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
+                        rowNumber++;
                         rowStart++;
                     }
                     rowStart--;
 
-                    worksheet.Cells("A2:E" + rowStart).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-                    worksheet.Cells("A2:E" + rowStart).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                    worksheet.Cells("A2:E" + rowStart).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                    worksheet.Cells("A2:E" + rowStart).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                    worksheet.Cells("A2:F" + rowStart).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                    worksheet.Cells("A2:F" + rowStart).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                    worksheet.Cells("A2:F" + rowStart).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                    worksheet.Cells("A2:F" + rowStart).Style.Border.RightBorder = XLBorderStyleValues.Thin;
 
                     using (var stream = new MemoryStream())
                     {
