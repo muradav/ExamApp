@@ -28,7 +28,7 @@ namespace ExamApp.Controllers
             return Ok(result);
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetOne(int id)
         {
             var result = await ExamCategoryManager.GetOne(id);
@@ -44,7 +44,7 @@ namespace ExamApp.Controllers
             return Ok(result);
         }
 
-        [HttpPut("id")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] ExamCategoryUpdateDto updateDto)
         {
             var result = await ExamCategoryManager.Update(id, updateDto);
@@ -52,7 +52,7 @@ namespace ExamApp.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await ExamCategoryManager.Delete(id);
