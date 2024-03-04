@@ -38,7 +38,7 @@ namespace Exam.Business.Managers
             var result = new ResultModel<QuestionResponseDto>();
             try
             {
-                IEnumerable<Question> questions = await _repo.GetAll(tracked: false);
+                IEnumerable<Question> questions = await _repo.GetAll(includePredicate: a => a.Include(x => x.Answers), tracked: false);
 
                 var response = _mapper.Map<List<QuestionResponseDto>>(questions);
 
@@ -59,7 +59,8 @@ namespace Exam.Business.Managers
             var result = new ResultModel<QuestionResponseDto>();
             try
             {
-                Question question = await _repo.GetOne(x => x.Id == id);
+                Question question = await _repo.GetOne(filter: x => x.Id == id,
+                                        includePredicate: x => x.Include(a => a.Answers));
                 QuestionResponseDto response = _mapper.Map<QuestionResponseDto>(question);
 
                 result.Data = response;
@@ -79,10 +80,57 @@ namespace Exam.Business.Managers
             var result = new ResultModel<bool>();
             try
             {
-                var existQuestion = await _repo.GetOne(x => x.Id == id, false);
+                var existQuestion = await _repo.GetOne(filter: x => x.Id == id, 
+                    includePredicate: x => x.Include(a => a.Answers), tracked: false);
                 if (existQuestion.Id == model.Id)
                 {
                     Question question = _mapper.Map<Question>(model);
+
+                    if (model.Image != null)
+                    {
+                        if (!model.Image.IsImage())
+                        {
+                            result.Message = "Image format is not valid";
+                            result.IsSuccess = false;
+                            return result;
+                        }
+                        if (model.Image.ValidSize(20))
+                        {
+                            result.Message = "Image is not valid";
+                            result.IsSuccess = false;
+                            return result;
+                        }
+                        if (existQuestion.ImageUrl !=null)
+                        {
+                            string questionImage = Path.Combine(_env.WebRootPath, "images/questionImages", existQuestion.ImageUrl);
+                            ImageService.DeleteImage(questionImage);
+                        }
+                        question.ImageUrl = model.Image.SaveImage(_env, "images/questionImages");
+                    }
+                    for (int i = 0; i < model.Answers.Count; i++)
+                    {
+                        if (model.Answers[i].Image != null)
+                        {
+                            if (!model.Answers[i].Image.IsImage())
+                            {
+                                result.Message = "Image format is not valid";
+                                result.IsSuccess = false;
+                                return result;
+                            }
+                            if (model.Answers[i].Image.ValidSize(20))
+                            {
+                                result.Message = "Image is not valid";
+                                result.IsSuccess = false;
+                                return result;
+                            }
+                            if (existQuestion.Answers[i].ImageUrl != null)
+                            {
+                                string asnwerImage = Path.Combine(_env.WebRootPath, "images/answerImages", existQuestion.Answers[i].ImageUrl);
+                            }
+                            question.Answers[i].ImageUrl = model.Answers[i].Image.SaveImage(_env, "images/answerImages");
+                        }
+                    }
+
                     await _repo.Update(question);
                     await _repo.SaveAsync();
 
@@ -131,7 +179,7 @@ namespace Exam.Business.Managers
             var result = new ResultModel<QuestionResponseDto>();
             try
             {
-                var existQuestion = await _repo.GetOne(x => x.Content.ToLower() == questionCreateDto.Content.ToLower(), false);
+                var existQuestion = await _repo.GetOne(x => x.Content.ToLower() == questionCreateDto.Content.ToLower(), tracked: false);
                 if (existQuestion != null)
                 {
                     result.Message = "Question is exist";

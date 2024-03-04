@@ -22,13 +22,18 @@ namespace Exam.DataAccess.Repository
             await _db.AddAsync(entity);
         }
 
-        public async Task<List<Question>> GetAll(Expression<Func<Question, bool>> filter = null, bool tracked = true)
+        public async Task<List<Question>> GetAll(Expression<Func<Question, bool>> filter = null,
+            Func<IQueryable<Question>, IQueryable<Question>> includePredicate = null, bool tracked = true)
         {
             IQueryable<Question> query = _db.Questions;
 
             if (!tracked)
             {
                 query = query.AsNoTracking();
+            }
+            if (includePredicate != null)
+            {
+                query = includePredicate(query);
             }
             if (filter != null)
             {
@@ -37,13 +42,17 @@ namespace Exam.DataAccess.Repository
             return await query.ToListAsync();
         }
 
-        public async Task<Question> GetOne(Expression<Func<Question, bool>> filter = null, bool tracked = true)
+        public async Task<Question> GetOne(Expression<Func<Question, bool>> filter = null, Func<IQueryable<Question>, IQueryable<Question>> includePredicate = null, bool tracked = true)
         {
             IQueryable<Question> query = _db.Questions;
 
             if (!tracked)
             {
                 query = query.AsNoTracking();
+            }
+            if (includePredicate != null)
+            {
+                query = includePredicate(query);
             }
             if (filter != null)
             {

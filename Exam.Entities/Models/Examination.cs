@@ -14,7 +14,7 @@ namespace Exam.Entities.Models
         public bool IsSuccess { get; set; }
 
         [ForeignKey("AppUser")]
-        public string ExaminerId { get; set; }
+        public string ExamineeId { get; set; }
         public AppUser AppUser { get; set; }
 
         public int ExamCategoryId { get; set; }

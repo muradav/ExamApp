@@ -37,7 +37,7 @@ namespace Exam.Business.Managers
                 var questions = await _questionRepo.GetRandom(model.RequestCount,q => q.ExamCategoryId == model.ExamCategoryId);
 
                 Examination examination = new();
-                examination.ExaminerId = userId.Value;
+                examination.ExamineeId = userId.Value;
                 examination.ExamCategoryId = model.ExamCategoryId;
                 examination.Questions = questions;
 
@@ -82,7 +82,7 @@ namespace Exam.Business.Managers
             var result = new ResultModel<List<ExaminationResponseDto>>();
             try
             {
-                var examination = await _repo.GetAll(filter: x => x.ExaminerId == userId,
+                var examination = await _repo.GetAll(filter: x => x.ExamineeId == userId,
                                 includePredicate: x => x.Include(e => e.Questions).ThenInclude(e => e.Answers));
 
                 List<ExaminationResponseDto> response = _mapper.Map<List<ExaminationResponseDto>>(examination);
@@ -162,7 +162,7 @@ namespace Exam.Business.Managers
 
             try
             {
-                var examinations = await _repo.GetAll(x => x.ExaminerId == userId, 
+                var examinations = await _repo.GetAll(x => x.ExamineeId == userId, 
                                         includePredicate: x => x.Include(e => e.Questions).Include(e => e.ExamCategory));
 
                 List<ExamDetailExportDto>  exportDetailDto = _mapper.Map<List<ExamDetailExportDto>>(examinations);

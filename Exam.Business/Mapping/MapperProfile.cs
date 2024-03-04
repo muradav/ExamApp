@@ -16,6 +16,7 @@ namespace Exam.Business.Mapping
             CreateMap<Question, QuestionDto>().ReverseMap();
             CreateMap<Answer, AnswerResponseDto>().ReverseMap();
             CreateMap<Question, QuestionResponseDto>().ReverseMap();
+            CreateMap<Answer, AnswerUpdateDto>().ReverseMap();
             CreateMap<Question, QuestionUpdateDto>().ReverseMap();
             CreateMap<Answer, AnswerCreateDto>().ReverseMap();
             CreateMap<Question, QuestionCreateDto>().ReverseMap();
