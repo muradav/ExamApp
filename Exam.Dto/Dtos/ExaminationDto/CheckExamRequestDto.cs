@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace Exam.Dto.Dtos.ExaminationDto
 {
-    public class CheckExamRequestDto
+    public record CheckExamRequestDto
     {
         public int ExaminationId { get; set; }
         public List<QuestionAnswerPair> Answers  { get; set; }
     }
 
-    public class QuestionAnswerPair
+    public record QuestionAnswerPair
     {
         public int QuestionId { get; set; }
         public string ExaminerAnswer { get; set; }

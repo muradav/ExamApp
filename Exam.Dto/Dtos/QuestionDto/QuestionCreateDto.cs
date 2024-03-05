@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Exam.Dto.Dtos.QuestionDto
 {
-    public class QuestionCreateDto
+    public record QuestionCreateDto
     {
         public string Content { get; set; }
         public int ExamCategoryId { get; set; }
@@ -16,7 +16,7 @@ namespace Exam.Dto.Dtos.QuestionDto
         public List<AnswerCreateDto> Answers { get; set; }
     }
 
-    public class AnswerCreateDto
+    public record AnswerCreateDto
     {
         public string Content { get; set; }
         public bool IsCorrect { get; set; } = false;

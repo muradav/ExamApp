@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Exam.Dto.Dtos.QuestionDto
 {
-    public class QuestionUpdateDto
+    public record QuestionUpdateDto
     {
         public int Id { get; set; }
         public string Content { get; set; }
@@ -17,7 +17,7 @@ namespace Exam.Dto.Dtos.QuestionDto
 
     }
 
-    public class AnswerUpdateDto
+    public record AnswerUpdateDto
     {
         public int Id { get; set; }
         public string Content { get; set; }

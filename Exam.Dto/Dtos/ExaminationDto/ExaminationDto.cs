@@ -2,7 +2,7 @@
 
 namespace Exam.Dto.Dtos.ExaminationDto
 {
-    public class ExaminationDto
+    public record ExaminationDto
     {
         public int RequestCount { get; set; }
         public int ExamCategoryId { get; set; }

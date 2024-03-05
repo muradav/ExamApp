@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Exam.Dto.Dtos.AccountDto
 {
-    public class RegistrationRequestDto
+    public record RegistrationRequestDto
     {
         public string UserName { get; set; }
         public string Name { get; set; }

@@ -1,6 +1,6 @@
 ﻿namespace Exam.Dto.Dtos.ExamCategoryDto
 {
-    public class ExamCategoryDto
+    public record ExamCategoryDto
     {
         public int Id { get; set; }
         public string Name { get; set; }

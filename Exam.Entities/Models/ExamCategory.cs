@@ -12,6 +12,6 @@ namespace Exam.Entities.Models
 
         public List<Question> Questions { get; set; }
 
-        public int QuestionCount { get; set; } = 0;
+        public int QuestionCount { get; set; }
     }
 }

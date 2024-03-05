@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Exam.Dto.Dtos.ExaminationDto
 {
-    public class ExamDetailsResponseDto
+    public record ExamDetailsResponseDto
     {
         public string Answer { get; set; }
         public bool isCorrect { get; set; }

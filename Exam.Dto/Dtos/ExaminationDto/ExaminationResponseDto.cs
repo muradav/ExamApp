@@ -6,19 +6,19 @@ using System.Threading.Tasks;
 
 namespace Exam.Dto.Dtos.ExaminationDto
 {
-    public class ExaminationResponseDto
+    public record ExaminationResponseDto
     {
         public int ExamCategoryId { get; set; }
         public List<ExamQuestionDto> Questions { get; set; }
     }
 
-    public  class ExamQuestionDto
+    public record ExamQuestionDto
     {
         public string Content { get; set; }
         public List<ExamAnswerDto> Answers { get; set; }
     }
 
-    public class ExamAnswerDto 
+    public record ExamAnswerDto 
     {
         public string Content { get; set; }
         public string ImageUrl { get; set; }

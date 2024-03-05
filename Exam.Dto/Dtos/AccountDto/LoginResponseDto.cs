@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Exam.Dto.Dtos.AccountDto
 {
-    public class LoginResponseDto
+    public record LoginResponseDto
     {
         public AppUser User { get; set; }
         public string Token { get; set; }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Exam.Dto.Dtos.AccountDto
 {
-    public class LoginRequestDto
+    public record LoginRequestDto
     {
         [Required(ErrorMessage = "User Name is required")]
         public string UserName { get; set; }

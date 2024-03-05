@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Exam.Dto.Dtos.ExaminationDto
 {
-    public class ExamDetailExportDto
+    public record ExamDetailExportDto
     {
         public string ExamCategory { get; set; }
         public DateOnly CreatedAt { get; set; }
