@@ -31,7 +31,7 @@ namespace Exam.API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("createRole")]
+        [HttpGet("creationRole")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateRole(string role) 
         {

@@ -17,7 +17,7 @@ namespace ExamApp.Controllers
             this.QuestionManager =  QuestionManager;
         }
 
-        [HttpPost("create")]
+        [HttpPost("creation")]
         public async Task<IActionResult> Create([FromForm] QuestionCreateDto questionCreateDto)
         {
             //var answers = Request.Form.FirstOrDefault(x => x.Key == nameof(QuestionCreateDto.Answers)).ToString();
@@ -62,7 +62,7 @@ namespace ExamApp.Controllers
             return Ok(result);
         }
 
-        [HttpPost("uploadExcel")]
+        [HttpPost("uploadingExcel")]
         public async Task<IActionResult> UploadExcel([FromForm] QuestionDto questionDto)
         {
             var result = await QuestionManager.UploadExcel(questionDto);
