@@ -1,10 +1,6 @@
-﻿using AutoMapper;
-using Exam.Business.Managers;
+﻿using Exam.Business.Managers.IManagers;
 using Exam.Dto.Dtos.AccountDto;
-using Exam.Entities.Enums;
-using Exam.Entities.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Exam.API.Controllers
@@ -13,12 +9,12 @@ namespace Exam.API.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private readonly AuthenticateManager AuthenticateManager;
+        private readonly IAuthenticateManager AuthenticateManager;
 
 
-        public AuthenticationController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IMapper mapper)
+        public AuthenticationController(IAuthenticateManager AuthenticateManager)
         {
-            AuthenticateManager = new AuthenticateManager(userManager, roleManager, configuration, mapper);
+            this.AuthenticateManager = AuthenticateManager;
         }
 
         [HttpPost("registration")]

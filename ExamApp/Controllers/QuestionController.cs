@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using Exam.Business.Managers;
-using Exam.DataAccess.Repository.IRepository;
+﻿using Exam.Business.Managers.IManagers;
 using Exam.Dto.Dtos.QuestionDto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,11 +10,11 @@ namespace ExamApp.Controllers
     [ApiController]
     public class QuestionController : ControllerBase
     {
-        private readonly QuestionManager QuestionManager;
+        private readonly IQuestionManager QuestionManager;
 
-        public QuestionController(IQuestionRepository repository, IMapper mapper, IWebHostEnvironment env, IExamCategoryRepository categoryRepository, IAnswerRepository answerRepository)
+        public QuestionController(IQuestionManager QuestionManager)
         {
-            QuestionManager = new QuestionManager(repository, mapper, env, categoryRepository, answerRepository);
+            this.QuestionManager =  QuestionManager;
         }
 
         [HttpPost("create")]
@@ -27,7 +25,7 @@ namespace ExamApp.Controllers
             //List<AnswerCreateDto> resultAnswer = JsonConvert.DeserializeObject<List<AnswerCreateDto>>(jsonAnswers);
             //questionCreateDto.Answers = resultAnswer;
 
-            var result = await QuestionManager.Create(questionCreateDto);
+            var result = await QuestionManager.AddAsync(questionCreateDto);
 
             return Ok(result);
         }
@@ -35,7 +33,7 @@ namespace ExamApp.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var result = await QuestionManager.GetAll();
+            var result = await QuestionManager.GetAllAsync();
 
             return Ok(result);
         }
@@ -43,7 +41,7 @@ namespace ExamApp.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOne(int id)
         {
-            var result = await QuestionManager.GetOne(id);
+            var result = await QuestionManager.GetOneAsync(id);
 
             return Ok(result);
         }
@@ -51,7 +49,7 @@ namespace ExamApp.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] QuestionUpdateDto updateDto)
         {
-            var result = await QuestionManager.Update(id, updateDto);
+            var result = await QuestionManager.UpdateAsync(id, updateDto);
 
             return Ok(result);
         }
@@ -59,7 +57,7 @@ namespace ExamApp.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var result = await QuestionManager.Delete(id);
+            var result = await QuestionManager.DeleteAsync(id);
 
             return Ok(result);
         }

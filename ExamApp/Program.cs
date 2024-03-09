@@ -6,6 +6,9 @@ using Exam.DataAccess.Repository.IRepository;
 using Exam.DataAccess.Repository;
 using Microsoft.OpenApi.Models;
 using Exam.DataAccess.DbInitializer;
+using Exam.DataAccess.UnitOfWork;
+using Exam.Business.Managers.IManagers;
+using Exam.Business.Managers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,11 +31,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase"));
 });
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
-builder.Services.AddScoped<IExamCategoryRepository, ExamCategoryRepository>();
-builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
-builder.Services.AddScoped<IExaminationRepository, ExaminationRepository>();
-builder.Services.AddScoped<IExaminationDetailRepository, ExaminationDetailRepository>();
-builder.Services.AddScoped<IAnswerRepository, AnswerRepository>();
+builder.Services.AddScoped<IAuthenticateManager, AuthenticateManager>();
+builder.Services.AddScoped<IExamCategoryManager, ExamCategoryManager>();
+builder.Services.AddScoped<IExaminationManager, ExaminationManager>();
+builder.Services.AddScoped<IQuestionManager, QuestionManager>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddAutoMapper(option =>
 {
     option.AddProfile(new MapperProfile());

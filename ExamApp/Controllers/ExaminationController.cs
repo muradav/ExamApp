@@ -1,10 +1,5 @@
-﻿using AutoMapper;
-using Exam.Business.Managers;
-using Exam.Business.Services;
-using Exam.DataAccess.Data;
-using Exam.DataAccess.Repository.IRepository;
+﻿using Exam.Business.Managers.IManagers;
 using Exam.Dto.Dtos.ExaminationDto;
-using Exam.Entities.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -16,18 +11,18 @@ namespace ExamApp.Controllers
     [ApiController]
     public class ExaminationController : ControllerBase
     {
-        private readonly ExaminationManager ExaminationManager;
+        private readonly IExaminationManager ExaminationManager;
 
-        public ExaminationController(ApplicationDbContext context,IExaminationRepository examRepo,IQuestionRepository questionRepo, IExaminationDetailRepository detailRepo, IMapper mapper)
+        public ExaminationController(IExaminationManager ExaminationManager)
         {
-            ExaminationManager = new(examRepo,questionRepo, detailRepo, mapper);
+            this.ExaminationManager = ExaminationManager;
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromForm]ExaminationDto examinationDto)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier);
-            var result = await ExaminationManager.Create(examinationDto,userId);
+            var result = await ExaminationManager.AddAsync(examinationDto,userId);
 
             return Ok(result);
         }
@@ -35,7 +30,7 @@ namespace ExamApp.Controllers
         [HttpGet("GetExam")]
         public async Task<IActionResult> GetExam(int id)
         {
-            var result = await ExaminationManager.GetOne(id);
+            var result = await ExaminationManager.GetOneAsync(id);
 
             return Ok(result);
         }
@@ -44,7 +39,7 @@ namespace ExamApp.Controllers
         public async Task<IActionResult> GetAll()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var result = await ExaminationManager.GetAll(userId);
+            var result = await ExaminationManager.GetAllAsync(userId);
 
             return Ok(result);
         }
