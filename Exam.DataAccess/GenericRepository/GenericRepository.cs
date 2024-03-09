@@ -1,39 +1,48 @@
 ﻿using Exam.DataAccess.Data;
-using Exam.DataAccess.Repository.IRepository;
 using Exam.Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Exam.DataAccess.Repository
+namespace Exam.DataAccess.GenericRepository
 {
-    public class QuestionRepository : IQuestionRepository
+    public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         private readonly ApplicationDbContext _db;
+        internal DbSet<T> dbSet;
 
-        public QuestionRepository(ApplicationDbContext db)
+        public GenericRepository(ApplicationDbContext db)
         {
             _db = db;
+            dbSet = _db.Set<T>();
         }
 
-        public async Task Add(Question entity)
+        public async Task AddAsync(T entity)
         {
-            await _db.AddAsync(entity);
+            await dbSet.AddAsync(entity);
         }
 
-        public async Task<List<Question>> GetAll(Expression<Func<Question, bool>> filter = null,
-            Func<IQueryable<Question>, IQueryable<Question>> includePredicate = null, bool tracked = true)
+        public async Task AddRangeAsync(List<T> entity)
         {
-            IQueryable<Question> query = _db.Questions;
+            await dbSet.AddRangeAsync(entity);
+        }
+
+        public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IQueryable<T>> include = null, bool tracked = true)
+        {
+            IQueryable<T> query = dbSet;
 
             if (!tracked)
             {
                 query = query.AsNoTracking();
             }
-            if (includePredicate != null)
+            if (include != null)
             {
-                query = includePredicate(query);
+                query = include(query);
             }
             if (filter != null)
             {
@@ -42,17 +51,17 @@ namespace Exam.DataAccess.Repository
             return await query.ToListAsync();
         }
 
-        public async Task<Question> GetOne(Expression<Func<Question, bool>> filter = null, Func<IQueryable<Question>, IQueryable<Question>> includePredicate = null, bool tracked = true)
+        public async Task<T> GetOneAsync(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IQueryable<T>> include = null, bool tracked = true)
         {
-            IQueryable<Question> query = _db.Questions;
+            IQueryable<T> query = dbSet;
 
             if (!tracked)
             {
                 query = query.AsNoTracking();
             }
-            if (includePredicate != null)
+            if (include != null)
             {
-                query = includePredicate(query);
+                query = include(query);
             }
             if (filter != null)
             {
@@ -61,9 +70,9 @@ namespace Exam.DataAccess.Repository
             return await query.FirstOrDefaultAsync();
         }
 
-        public async Task<List<Question>> GetRandom(int take = 0, Expression<Func<Question, bool>> filter = null, bool tracked = true)
+        public async Task<List<T>> GetRandomAsync(int take = 0, Expression<Func<T, bool>> filter = null, bool tracked = true)
         {
-            IQueryable<Question> query = _db.Questions;
+            IQueryable<T> query = dbSet;
 
             if (!tracked)
             {
@@ -83,22 +92,17 @@ namespace Exam.DataAccess.Repository
             return await query.ToListAsync();
         }
 
-        public bool Remove(Question entity)
+        public bool Remove(T entity)
         {
-            _db.Questions.Remove(entity);
+            dbSet.Remove(entity);
             return true;
         }
 
-        public async Task SaveAsync()
+        public bool Update(T entity)
         {
-            await _db.SaveChangesAsync();
-        }
+            dbSet.Update(entity);
 
-        public async Task<bool> Update(Question entity)
-        {
-            _db.Update(entity);
-
-            return await Task.FromResult(true);
+            return true;
         }
     }
 }
