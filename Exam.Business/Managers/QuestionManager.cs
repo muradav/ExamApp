@@ -1,20 +1,14 @@
 ﻿using AutoMapper;
 using Exam.Business.Managers.IManagers;
 using Exam.Business.Services;
-using Exam.DataAccess.Repository.IRepository;
 using Exam.DataAccess.UnitOfWork;
 using Exam.Dto.AppModel;
-using Exam.Dto.Dtos.ExamCategoryDto;
 using Exam.Dto.Dtos.QuestionDto;
 using Exam.Entities.Models;
 using ExcelDataReader;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Exam.Business.Managers
 {
@@ -276,7 +270,7 @@ namespace Exam.Business.Managers
                                     }
 
                                     Question question = new();
-                                    var category = await _categoryRepo.GetOne(c => c.Id == questionDto.ExamCategoryId);
+                                    var category = await _unitOfWork.ExamCategory.GetOneAsync(c => c.Id == questionDto.ExamCategoryId);
 
                                     question.Content = reader.GetValue(1).ToString();
                                     question.ExamCategoryId = questionDto.ExamCategoryId;
@@ -286,8 +280,8 @@ namespace Exam.Business.Managers
                                     }
                                     question.ExcelUrl = filename;
 
-                                    await _repo.Add(question);
-                                    await _repo.SaveAsync();
+                                    await _unitOfWork.Question.AddAsync(question);
+                                    await _unitOfWork.SaveAsync();
 
 
                                     List<Answer> answers = new();
@@ -303,10 +297,10 @@ namespace Exam.Business.Managers
                                         answers.Add(answer);
                                     }
 
-                                    await _answerRepository.AddRange(answers);
+                                    await _unitOfWork.Answer.AddRangeAsync(answers);
 
 
-                                    await _answerRepository.SaveAsync();
+                                    await _unitOfWork.SaveAsync();
                                 }
                             } while (reader.NextResult());
                         }

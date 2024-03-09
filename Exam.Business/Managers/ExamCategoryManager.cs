@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Exam.Business.Managers.IManagers;
-using Exam.DataAccess.Repository.IRepository;
 using Exam.DataAccess.UnitOfWork;
 using Exam.Dto.AppModel;
 using Exam.Dto.Dtos.ExamCategoryDto;

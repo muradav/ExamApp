@@ -1,14 +1,12 @@
+using Exam.Business.Managers;
+using Exam.Business.Managers.IManagers;
+using Exam.Business.Mapping;
 using Exam.Business.Services;
 using Exam.DataAccess.Data;
-using Exam.Business.Mapping;
-using Microsoft.EntityFrameworkCore;
-using Exam.DataAccess.Repository.IRepository;
-using Exam.DataAccess.Repository;
-using Microsoft.OpenApi.Models;
 using Exam.DataAccess.DbInitializer;
 using Exam.DataAccess.UnitOfWork;
-using Exam.Business.Managers.IManagers;
-using Exam.Business.Managers;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 

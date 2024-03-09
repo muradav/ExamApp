@@ -1,15 +1,12 @@
 ﻿using AutoMapper;
 using ClosedXML.Excel;
 using Exam.Business.Managers.IManagers;
-using Exam.Business.Services;
-using Exam.DataAccess.Repository.IRepository;
 using Exam.DataAccess.UnitOfWork;
 using Exam.Dto.AppModel;
 using Exam.Dto.Dtos.ExaminationDto;
 using Exam.Entities.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using OfficeOpenXml;
 using System.Security.Claims;
 
 namespace Exam.Business.Managers
