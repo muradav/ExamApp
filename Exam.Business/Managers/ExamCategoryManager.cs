@@ -1,28 +1,30 @@
 ﻿using AutoMapper;
+using Exam.Business.Managers.IManagers;
 using Exam.DataAccess.Repository.IRepository;
+using Exam.DataAccess.UnitOfWork;
 using Exam.Dto.AppModel;
 using Exam.Dto.Dtos.ExamCategoryDto;
 using Exam.Entities.Models;
 
 namespace Exam.Business.Managers
 {
-    public class ExamCategoryManager
+    public class ExamCategoryManager : IExamCategoryManager
     {
-        private readonly IExamCategoryRepository _repo;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public ExamCategoryManager(IExamCategoryRepository repo, IMapper mapper)
+        public ExamCategoryManager(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _repo = repo;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
-        public async Task<ResultModel<ExamCategory>> GetAll()
+        public async Task<ResultModel<ExamCategory>> GetAllAsync()
         {
             var result = new ResultModel<ExamCategory>();
             try
             {
-                IEnumerable<ExamCategory> examCategories = await _repo.GetAll(tracked: false);
+                IEnumerable<ExamCategory> examCategories = await _unitOfWork.ExamCategory.GetAllAsync(tracked: false);
 
                 var categoryDto = _mapper.Map<List<ExamCategoryDto>>(examCategories);
 
@@ -38,12 +40,12 @@ namespace Exam.Business.Managers
             return result;
         }
 
-        public async Task<ResultModel<ExamCategory>> GetOne(int id)
+        public async Task<ResultModel<ExamCategory>> GetOneAsync(int id)
         {
             var result = new ResultModel<ExamCategory>();
             try
             {
-                ExamCategory examCategory = await _repo.GetOne(x => x.Id == id);
+                ExamCategory examCategory = await _unitOfWork.ExamCategory.GetOneAsync(x => x.Id == id);
                 ExamCategoryDto examCategoryDto = _mapper.Map<ExamCategoryDto>(examCategory);
 
                 result.Data = examCategoryDto;
@@ -58,17 +60,17 @@ namespace Exam.Business.Managers
             return result;
         }
 
-        public async Task<ResultModel<bool>> Create(ExamCategoryCreateDto model)
+        public async Task<ResultModel<bool>> AddAsync(ExamCategoryCreateDto model)
         {
             var result = new ResultModel<bool>();
             try
             {
-                var existCategory = await _repo.GetOne(x => x.Name.ToLower() == model.Name.ToLower());
+                var existCategory = await _unitOfWork.ExamCategory.GetOneAsync(x => x.Name.ToLower() == model.Name.ToLower());
                 if (existCategory == null)
                 {
                     ExamCategory examCategory = _mapper.Map<ExamCategory>(model);
-                    await _repo.Add(examCategory);
-                    await _repo.SaveAsync();
+                    await _unitOfWork.ExamCategory.AddAsync(examCategory);
+                    await _unitOfWork.SaveAsync();
                     result.Data = true;
                     result.IsSuccess = true;
                 }
@@ -85,17 +87,17 @@ namespace Exam.Business.Managers
             return result;
         }
 
-        public async Task<ResultModel<bool>> Update(int id, ExamCategoryUpdateDto model)
+        public async Task<ResultModel<bool>> UpdateAsync(int id, ExamCategoryUpdateDto model)
         {
             var result = new ResultModel<bool>();
             try
             {
-                var existCategory = await _repo.GetOne(x => x.Id == id, false);
+                var existCategory = await _unitOfWork.ExamCategory.GetOneAsync(x => x.Id == id, tracked: false);
                 if (existCategory.Id == model.Id)
                 {
                     ExamCategory examCategory = _mapper.Map<ExamCategory>(model);
-                    await _repo.Update(examCategory);
-                    await _repo.SaveAsync();
+                    _unitOfWork.ExamCategory.Update(examCategory);
+                    await _unitOfWork.SaveAsync();
                     
                     result.Data = true;
                     result.IsSuccess = true;
@@ -115,15 +117,15 @@ namespace Exam.Business.Managers
             return result;
         }
 
-        public async Task<ResultModel<bool>> Delete(int id)
+        public async Task<ResultModel<bool>> DeleteAsync(int id)
         {
             var result = new ResultModel<bool>();
             try
             {
-                ExamCategory examCategory = await _repo.GetOne(x => x.Id == id);
+                ExamCategory examCategory = await _unitOfWork.ExamCategory.GetOneAsync(x => x.Id == id);
 
-                _repo.Remove(examCategory);
-                await _repo.SaveAsync();
+                _unitOfWork.ExamCategory.Remove(examCategory);
+                await _unitOfWork.SaveAsync();
 
                 result.Data = true;
                 result.IsSuccess = true;

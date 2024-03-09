@@ -1,23 +1,18 @@
 ﻿using AutoMapper;
+using Exam.Business.Managers.IManagers;
 using Exam.Dto.AppModel;
 using Exam.Dto.Dtos.AccountDto;
 using Exam.Entities.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Exam.Business.Managers
 {
-    public class AuthenticateManager
+    public class AuthenticateManager : IAuthenticateManager
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
@@ -121,7 +116,7 @@ namespace Exam.Business.Managers
             return result;
         }
 
-        private JwtSecurityToken GetToken(List<Claim> authClaims)
+        public JwtSecurityToken GetToken(List<Claim> authClaims)
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
 

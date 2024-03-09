@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Exam.Business.Managers.IManagers;
 using Exam.Business.Services;
 using Exam.DataAccess.Repository.IRepository;
+using Exam.DataAccess.UnitOfWork;
 using Exam.Dto.AppModel;
 using Exam.Dto.Dtos.ExamCategoryDto;
 using Exam.Dto.Dtos.QuestionDto;
@@ -16,29 +18,25 @@ using System.Threading.Tasks;
 
 namespace Exam.Business.Managers
 {
-    public class QuestionManager
+    public class QuestionManager : IQuestionManager
     {
-        private readonly IQuestionRepository _repo;
-        private readonly IExamCategoryRepository _categoryRepo;
-        private readonly IAnswerRepository _answerRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _env;
 
-        public QuestionManager(IQuestionRepository repo, IMapper mapper, IWebHostEnvironment env, IExamCategoryRepository categoryRepo, IAnswerRepository answerRepository)
+        public QuestionManager(IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment env)
         {
-            _repo = repo;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
             _env = env;
-            _categoryRepo = categoryRepo;
-            _answerRepository = answerRepository;
         }
 
-        public async Task<ResultModel<QuestionResponseDto>> GetAll()
+        public async Task<ResultModel<QuestionResponseDto>> GetAllAsync()
         {
             var result = new ResultModel<QuestionResponseDto>();
             try
             {
-                IEnumerable<Question> questions = await _repo.GetAll(includePredicate: a => a.Include(x => x.Answers), tracked: false);
+                IEnumerable<Question> questions = await _unitOfWork.Question.GetAllAsync(include: a => a.Include(x => x.Answers), tracked: false);
 
                 var response = _mapper.Map<List<QuestionResponseDto>>(questions);
 
@@ -54,13 +52,13 @@ namespace Exam.Business.Managers
             return result;
         }
 
-        public async Task<ResultModel<QuestionResponseDto>> GetOne(int id)
+        public async Task<ResultModel<QuestionResponseDto>> GetOneAsync(int id)
         {
             var result = new ResultModel<QuestionResponseDto>();
             try
             {
-                Question question = await _repo.GetOne(filter: x => x.Id == id,
-                                        includePredicate: x => x.Include(a => a.Answers));
+                Question question = await _unitOfWork.Question.GetOneAsync(filter: x => x.Id == id,
+                                        include: x => x.Include(a => a.Answers));
                 QuestionResponseDto response = _mapper.Map<QuestionResponseDto>(question);
 
                 result.Data = response;
@@ -75,13 +73,13 @@ namespace Exam.Business.Managers
             return result;
         }
 
-        public async Task<ResultModel<bool>> Update(int id, QuestionUpdateDto model)
+        public async Task<ResultModel<bool>> UpdateAsync(int id, QuestionUpdateDto model)
         {
             var result = new ResultModel<bool>();
             try
             {
-                var existQuestion = await _repo.GetOne(filter: x => x.Id == id, 
-                    includePredicate: x => x.Include(a => a.Answers), tracked: false);
+                var existQuestion = await _unitOfWork.Question.GetOneAsync(filter: x => x.Id == id, 
+                    include: x => x.Include(a => a.Answers), tracked: false);
                 if (existQuestion.Id == model.Id)
                 {
                     Question question = _mapper.Map<Question>(model);
@@ -131,8 +129,8 @@ namespace Exam.Business.Managers
                         }
                     }
 
-                    await _repo.Update(question);
-                    await _repo.SaveAsync();
+                    _unitOfWork.Question.Update(question);
+                    await _unitOfWork.SaveAsync();
 
                     result.Data = true;
                     result.IsSuccess = true;
@@ -152,15 +150,15 @@ namespace Exam.Business.Managers
             return result;
         }
 
-        public async Task<ResultModel<bool>> Delete(int id)
+        public async Task<ResultModel<bool>> DeleteAsync(int id)
         {
             var result = new ResultModel<bool>();
             try
             {
-                Question question = await _repo.GetOne(x => x.Id == id);
+                Question question = await _unitOfWork.Question.GetOneAsync(x => x.Id == id);
 
-                _repo.Remove(question);
-                await _repo.SaveAsync();
+                _unitOfWork.Question.Remove(question);
+                await _unitOfWork.SaveAsync();
 
                 result.Data = true;
                 result.IsSuccess = true;
@@ -174,12 +172,12 @@ namespace Exam.Business.Managers
             return result;
         }
 
-        public async Task<ResultModel<QuestionResponseDto>> Create(QuestionCreateDto questionCreateDto)
+        public async Task<ResultModel<QuestionResponseDto>> AddAsync(QuestionCreateDto questionCreateDto)
         {
             var result = new ResultModel<QuestionResponseDto>();
             try
             {
-                var existQuestion = await _repo.GetOne(x => x.Content.ToLower() == questionCreateDto.Content.ToLower(), tracked: false);
+                var existQuestion = await _unitOfWork.Question.GetOneAsync(x => x.Content.ToLower() == questionCreateDto.Content.ToLower(), tracked: false);
                 if (existQuestion != null)
                 {
                     result.Message = "Question is exist";
@@ -226,8 +224,8 @@ namespace Exam.Business.Managers
                     }
                 }
 
-                await _repo.Add(question);
-                await _repo.SaveAsync();
+                await _unitOfWork.Question.AddAsync(question);
+                await _unitOfWork.SaveAsync();
 
                 QuestionResponseDto questionResponse = _mapper.Map<QuestionResponseDto>(question);
 

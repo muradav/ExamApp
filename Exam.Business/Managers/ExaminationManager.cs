@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using ClosedXML.Excel;
+using Exam.Business.Managers.IManagers;
 using Exam.Business.Services;
 using Exam.DataAccess.Repository.IRepository;
+using Exam.DataAccess.UnitOfWork;
 using Exam.Dto.AppModel;
 using Exam.Dto.Dtos.ExaminationDto;
 using Exam.Entities.Models;
@@ -13,37 +15,33 @@ using System.Security.Claims;
 namespace Exam.Business.Managers
 {
 
-    public class ExaminationManager
+    public class ExaminationManager : IExaminationManager
     {
-        private readonly IExaminationRepository _repo;
-        private readonly IQuestionRepository _questionRepo;
-        private readonly IExaminationDetailRepository _detailRepo;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public ExaminationManager(IExaminationRepository repo, IQuestionRepository questionRepo, IExaminationDetailRepository detailRepo, IMapper mapper)
+        public ExaminationManager(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _repo = repo;
-            _questionRepo = questionRepo;
-            _detailRepo = detailRepo;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
-        public async Task<ResultModel<bool>> Create(ExaminationDto model, Claim userId)
+        public async Task<ResultModel<bool>> AddAsync(ExaminationDto model, Claim userId)
         {
             ResultModel<bool> result = new();
             try
             {
                 Random rnd = new();
 
-                var questions = await _questionRepo.GetRandom(model.RequestCount,q => q.ExamCategoryId == model.ExamCategoryId);
+                var questions = await _unitOfWork.Question.GetRandomAsync(model.RequestCount,q => q.ExamCategoryId == model.ExamCategoryId);
 
                 Examination examination = new();
                 examination.ExamineeId = userId.Value;
                 examination.ExamCategoryId = model.ExamCategoryId;
                 examination.Questions = questions;
 
-                await _repo.Add(examination);
-                await _repo.SaveAsync();
+                await _unitOfWork.Examination.AddAsync(examination);
+                await _unitOfWork.SaveAsync();
 
                 result.Data = true;
                 result.IsSuccess = true;
@@ -56,13 +54,13 @@ namespace Exam.Business.Managers
             return result;
         }
 
-        public async Task<ResultModel<ExaminationResponseDto>> GetOne(int id)
+        public async Task<ResultModel<ExaminationResponseDto>> GetOneAsync(int id)
         {
             var result = new ResultModel<ExaminationResponseDto>();
             try
             {
-                var examination = await _repo.GetOneWithInclude(filter: x => x.Id == id, 
-                                includePredicate: x => x.Include(e => e.Questions).ThenInclude(e => e.Answers));
+                var examination = await _unitOfWork.Examination.GetOneAsync(filter: x => x.Id == id, 
+                                include: x => x.Include(e => e.Questions).ThenInclude(e => e.Answers));
 
                 ExaminationResponseDto response = _mapper.Map<ExaminationResponseDto>(examination);
 
@@ -78,13 +76,13 @@ namespace Exam.Business.Managers
             return result;
         }
 
-        public async Task<ResultModel<List<ExaminationResponseDto>>> GetAll(string userId)
+        public async Task<ResultModel<List<ExaminationResponseDto>>> GetAllAsync(string userId)
         {
             var result = new ResultModel<List<ExaminationResponseDto>>();
             try
             {
-                var examination = await _repo.GetAll(filter: x => x.ExamineeId == userId,
-                                includePredicate: x => x.Include(e => e.Questions).ThenInclude(e => e.Answers));
+                var examination = await _unitOfWork.Examination.GetAllAsync(filter: x => x.ExamineeId == userId,
+                                include: x => x.Include(e => e.Questions).ThenInclude(e => e.Answers));
 
                 List<ExaminationResponseDto> response = _mapper.Map<List<ExaminationResponseDto>>(examination);
 
@@ -105,8 +103,8 @@ namespace Exam.Business.Managers
             var result = new ResultModel<bool>();
             try
             {
-                var examination = await _repo.GetOneWithInclude(filter: x => x.Id == requestDto.ExaminationId,
-                                                                includePredicate: x => x.Include(x => x.Questions).ThenInclude(x => x.Answers));
+                var examination = await _unitOfWork.Examination.GetOneAsync(filter: x => x.Id == requestDto.ExaminationId,
+                                                                include: x => x.Include(x => x.Questions).ThenInclude(x => x.Answers));
 
                 List<ExaminationDetail> examDetails = new();
 
@@ -130,8 +128,8 @@ namespace Exam.Business.Managers
                     examDetails.Add(examDetail);
                 }
 
-                await _detailRepo.AddRange(examDetails);
-                await _detailRepo.SaveAsync();
+                await _unitOfWork.ExaminationDetail.AddRangeAsync(examDetails);
+                await _unitOfWork.SaveAsync();
 
                 examination.Point = (examination.CorrectAnswersCount * 100) / examination.Questions.Count();
                 if (examination.Point>65)
@@ -144,8 +142,8 @@ namespace Exam.Business.Managers
                     result.Data = "You failed";
                 }
 
-                await _repo.Update(examination);
-                await _repo.SaveAsync();
+                _unitOfWork.Examination.Update(examination);
+                await _unitOfWork.SaveAsync();
 
                 
                 result.IsSuccess = true;
@@ -163,8 +161,8 @@ namespace Exam.Business.Managers
 
             try
             {
-                var examinations = await _repo.GetAll(x => x.ExamineeId == userId, 
-                                        includePredicate: x => x.Include(e => e.Questions).Include(e => e.ExamCategory));
+                var examinations = await _unitOfWork.Examination.GetAllAsync(x => x.ExamineeId == userId, 
+                                        include: x => x.Include(e => e.Questions).Include(e => e.ExamCategory));
 
                 List<ExamDetailExportDto>  exportDetailDto = _mapper.Map<List<ExamDetailExportDto>>(examinations);
 
