@@ -14,5 +14,7 @@ namespace Exam.DataAccess.UnitOfWork
         IExaminationDetailRepository ExaminationDetail { get; }
         IExaminationRepository Examination { get; }
         IQuestionRepository Question { get; }
+
+        Task<int> SaveAsync();
     }
 }
