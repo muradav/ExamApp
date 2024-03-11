@@ -1,6 +1,7 @@
 using Exam.Business.Managers;
 using Exam.Business.Managers.IManagers;
 using Exam.Business.Mapping;
+using Exam.Business.Middlewares;
 using Exam.Business.Services;
 using Exam.DataAccess.Data;
 using Exam.DataAccess.DbInitializer;
@@ -82,6 +83,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 app.UseAuthentication();
 
