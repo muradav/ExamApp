@@ -38,7 +38,6 @@ namespace ExamApp.Controllers
         [HttpGet("allExaminations")]
         public async Task<IActionResult> GetAll()
         {
-            throw new Exception("Test exception");
             var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var result = await ExaminationManager.GetAllAsync(userId);
 

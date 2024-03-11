@@ -35,10 +35,7 @@ builder.Services.AddScoped<IExamCategoryManager, ExamCategoryManager>();
 builder.Services.AddScoped<IExaminationManager, ExaminationManager>();
 builder.Services.AddScoped<IQuestionManager, QuestionManager>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddAutoMapper(option =>
-{
-    option.AddProfile(new MapperProfile());
-});
+builder.Services.AddAutoMapper(Automapper.GetAutoMapperProfilesFromAllAssemblies().ToArray());
 
 builder.Services.AddIdentityServices();
 
