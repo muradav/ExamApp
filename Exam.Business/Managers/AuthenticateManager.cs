@@ -31,88 +31,71 @@ namespace Exam.Business.Managers
         {
             var result = new ResultModel<bool>();
 
-            try
-            {
                 var userExists = await _userManager.FindByNameAsync(model.UserName);
-                if (userExists != null)
-                {
-                    result.Message = "User already exists!";
-                    result.IsSuccess = false;
-                    return result;
-                }
-
-                AppUser user = _mapper.Map<AppUser>(model);
-
-                var registerResult = await _userManager.CreateAsync(user, model.Password);
-                if (!registerResult.Succeeded)
-                {
-                    result.Message = registerResult.ToString();
-                    result.IsSuccess = false;
-                    return result;
-                }
-
-                registerResult = await _userManager.AddToRoleAsync(user, "Examinee");
-                if (!registerResult.Succeeded)
-                {
-                    result.Message = registerResult.ToString();
-                    result.IsSuccess = false;
-                    return result;
-                }
-
-                result.IsSuccess = true;
-                result.Message = "User Successfully created.";
-                return result;
-            }
-            catch (Exception ex)
+            if (userExists != null)
             {
-                result.Message = "Create user error:" + ex.Message + " " + ex.InnerException?.Message;
+                result.Message = "User already exists!";
                 result.IsSuccess = false;
                 return result;
             }
+
+            AppUser user = _mapper.Map<AppUser>(model);
+
+            var registerResult = await _userManager.CreateAsync(user, model.Password);
+            if (!registerResult.Succeeded)
+            {
+                result.Message = registerResult.ToString();
+                result.IsSuccess = false;
+                return result;
+            }
+
+            registerResult = await _userManager.AddToRoleAsync(user, "Examinee");
+            if (!registerResult.Succeeded)
+            {
+                result.Message = registerResult.ToString();
+                result.IsSuccess = false;
+                return result;
+            }
+
+            result.IsSuccess = true;
+            result.Message = "User Successfully created.";
+            return result;
         }
 
         public async Task<ResultModel<LoginResponseDto>> Login(LoginRequestDto model)
         {
             var result = new ResultModel<LoginResponseDto>();
 
-            try
+            var user = await _userManager.FindByNameAsync(model.UserName);
+            if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
-                var user = await _userManager.FindByNameAsync(model.UserName);
-                if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
+                var userRoles = await _userManager.GetRolesAsync(user);
+
+                var authClaims = new List<Claim>
                 {
-                    var userRoles = await _userManager.GetRolesAsync(user);
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                };
 
-                    var authClaims = new List<Claim>
-                    {
-                        new Claim(ClaimTypes.Name, user.UserName),
-                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                        new Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    };
-
-                    foreach (var userRole in userRoles)
-                    {
-                        authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-                    }
-
-                    var token = GetToken(authClaims);
-
-                    result.Data = new LoginResponseDto
-                    {
-                        User = user,
-                        Token = new JwtSecurityTokenHandler().WriteToken(token)
-                    };
-
-                    result.IsSuccess = true;
-                    result.Message = "Login Success.";
+                foreach (var userRole in userRoles)
+                {
+                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
                 }
 
-            }
-            catch (Exception ex)
-            {
-                result.IsSuccess = false;
-                result.Message = "Login Error:" + ex.Message + ex.InnerException?.Message;
+                var token = GetToken(authClaims);
 
+                result.Data = new LoginResponseDto
+                {
+                    User = user,
+                    Token = new JwtSecurityTokenHandler().WriteToken(token)
+                };
+
+                result.IsSuccess = true;
+                result.Message = "Login Success.";
             }
+
+            
             return result;
         }
 
@@ -136,21 +119,12 @@ namespace Exam.Business.Managers
         {
             var result = new ResultModel<bool>();
 
-            try
-            {
-                var upperRole = char.ToUpper(role[0]) + role.Substring(1);
-                await _roleManager.CreateAsync(new IdentityRole { Name = upperRole });
+            var upperRole = char.ToUpper(role[0]) + role.Substring(1);
+            await _roleManager.CreateAsync(new IdentityRole { Name = upperRole });
 
-                result.Data = true;
-                result.IsSuccess = true;
-                result.Message = "Role created";
-            }
-            catch (Exception ex)
-            {
-
-                result.IsSuccess = false;
-                result.Message = ex.Message;
-            }
+            result.Data = true;
+            result.IsSuccess = true;
+            result.Message = "Role created";
 
             return result;
         }
@@ -159,54 +133,46 @@ namespace Exam.Business.Managers
         {
             var result = new ResultModel<bool>();
 
-            try
+            var userExists = await _userManager.FindByNameAsync(model.UserName);
+            if (userExists != null)
             {
-                var userExists = await _userManager.FindByNameAsync(model.UserName);
-                if (userExists != null)
-                {
-                    result.Message = "User already exists!";
-                    result.IsSuccess = false;
-                    return result;
-                }
-
-                AppUser user = _mapper.Map<AppUser>(model);
-
-                var registerResult = await _userManager.CreateAsync(user, model.Password);
-                if (!registerResult.Succeeded)
-                {
-                    result.Message = registerResult.ToString();
-                    result.IsSuccess = false;
-                    return result;
-                }
-
-                var upperRole = char.ToUpper(model.Role[0]) + model.Role.Substring(1);
-                var roles = _roleManager.FindByNameAsync(upperRole);
-                
-                if (roles == null)
-                {
-                    result.Message = "Role does not exist";
-                    result.IsSuccess = false;
-                    return result;
-                }
-
-                registerResult = await _userManager.AddToRoleAsync(user, upperRole);
-                if (!registerResult.Succeeded)
-                {
-                    result.Message = registerResult.ToString();
-                    result.IsSuccess = false;
-                    return result;
-                }
-
-                result.IsSuccess = true;
-                result.Message = "User Successfully created.";
-                return result;
-            }
-            catch (Exception ex)
-            {
-                result.Message = "Create user error:" + ex.Message + " " + ex.InnerException?.Message;
+                result.Message = "User already exists!";
                 result.IsSuccess = false;
                 return result;
             }
+
+            AppUser user = _mapper.Map<AppUser>(model);
+
+            var registerResult = await _userManager.CreateAsync(user, model.Password);
+            if (!registerResult.Succeeded)
+            {
+                result.Message = registerResult.ToString();
+                result.IsSuccess = false;
+                return result;
+            }
+
+            var upperRole = char.ToUpper(model.Role[0]) + model.Role.Substring(1);
+            var roles = _roleManager.FindByNameAsync(upperRole);
+            
+            if (roles == null)
+            {
+                result.Message = "Role does not exist";
+                result.IsSuccess = false;
+                return result;
+            }
+
+            registerResult = await _userManager.AddToRoleAsync(user, upperRole);
+            if (!registerResult.Succeeded)
+            {
+                result.Message = registerResult.ToString();
+                result.IsSuccess = false;
+                return result;
+            }
+
+            result.IsSuccess = true;
+            result.Message = "User Successfully created.";
+                
+            return result;
         }
     }
 }
