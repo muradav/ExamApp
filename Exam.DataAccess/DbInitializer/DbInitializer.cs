@@ -2,7 +2,6 @@
 using Exam.Entities.Enums;
 using Exam.Entities.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace Exam.DataAccess.DbInitializers
 {

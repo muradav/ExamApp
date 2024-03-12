@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using ClosedXML.Excel;
 using Exam.Business.Managers.IManagers;
-using Exam.DataAccess.UnitOfWork;
+using Exam.DataAccess.UnitOfWorks;
 using Exam.Dto.AppModel;
 using Exam.Dto.Dtos.ExaminationDto;
 using Exam.Entities.Models;

@@ -3,6 +3,7 @@ using Exam.Business.Mapping;
 using Exam.Business.Middlewares;
 using Exam.Business.Services;
 using Exam.DataAccess.Data;
+using Exam.DataAccess.DbInitializers;
 using Exam.DataAccess.Extensions;
 using Microsoft.EntityFrameworkCore;
 

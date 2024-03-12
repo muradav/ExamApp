@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Exam.Business.Managers.IManagers;
 using Exam.Business.Services;
-using Exam.DataAccess.UnitOfWork;
+using Exam.DataAccess.UnitOfWorks;
 using Exam.Dto.AppModel;
 using Exam.Dto.Dtos.QuestionDto;
 using Exam.Entities.Models;
