@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Exam.DataAccess.DbInitializer
+namespace Exam.DataAccess.DbInitializers
 {
     public interface IDbInitializer
     {

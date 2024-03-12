@@ -3,10 +3,8 @@ using Exam.Business.Mapping;
 using Exam.Business.Middlewares;
 using Exam.Business.Services;
 using Exam.DataAccess.Data;
-using Exam.DataAccess.DbInitializer;
-using Exam.DataAccess.UnitOfWork;
+using Exam.DataAccess.Extensions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,13 +22,13 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 ).AddXmlDataContractSerializerFormatters(); 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase"));
 });
-builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+builder.Services.DbServices();
 builder.Services.AddManagerService();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddAutoMapper(Automapper.GetAutoMapperProfilesFromAllAssemblies().ToArray());
 
 builder.Services.AddIdentityServices();

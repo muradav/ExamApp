@@ -1,4 +1,5 @@
-﻿using Exam.Entities.Models;
+﻿using Exam.DataAccess.Extensions;
+using Exam.Entities.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -26,23 +27,7 @@ namespace Exam.DataAccess.Data
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<ExamCategory>().HasData(
-                new ExamCategory
-                {
-                    Id = 1,
-                    Name = "General Knowledge"
-                },
-                new ExamCategory
-                {
-                    Id = 2,
-                    Name = "Mathematics"
-                },
-                new ExamCategory
-                {
-                    Id = 3,
-                    Name = "History"
-                }
-                );
+            builder.Seed();
         }
     }
 }

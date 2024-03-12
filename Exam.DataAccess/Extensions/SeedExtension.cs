@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Exam.Business.Extensions
+namespace Exam.DataAccess.Extensions
 {
     public static class SeedExtension
     {

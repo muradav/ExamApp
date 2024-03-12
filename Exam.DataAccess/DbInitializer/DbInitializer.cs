@@ -4,7 +4,7 @@ using Exam.Entities.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace Exam.DataAccess.DbInitializer
+namespace Exam.DataAccess.DbInitializers
 {
     public class DbInitializer : IDbInitializer
     {
