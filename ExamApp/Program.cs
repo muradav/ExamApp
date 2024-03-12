@@ -1,5 +1,4 @@
-using Exam.Business.Managers;
-using Exam.Business.Managers.IManagers;
+using Exam.Business.Extensions;
 using Exam.Business.Mapping;
 using Exam.Business.Middlewares;
 using Exam.Business.Services;
@@ -30,10 +29,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase"));
 });
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
-builder.Services.AddScoped<IAuthenticateManager, AuthenticateManager>();
-builder.Services.AddScoped<IExamCategoryManager, ExamCategoryManager>();
-builder.Services.AddScoped<IExaminationManager, ExaminationManager>();
-builder.Services.AddScoped<IQuestionManager, QuestionManager>();
+builder.Services.AddManagerService();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddAutoMapper(Automapper.GetAutoMapperProfilesFromAllAssemblies().ToArray());
 
@@ -41,34 +37,7 @@ builder.Services.AddIdentityServices();
 
 builder.Services.AddAuthenticationServices(configuration);
 
-builder.Services.AddSwaggerGen(option =>
-{
-    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Description = "Enter 'Bearer' [space] and then your token in the text input below \r\n\r\n" +
-                      "Example: Bearer 12345abcdef",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
-    });
-    option.AddSecurityRequirement(new OpenApiSecurityRequirement()
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                },
-                Scheme = "oauth2",
-                Name = "Bearer"
-            },
-            new List<string>()
-        }
-    });
-});
+builder.Services.AddSwaggerService();
 
 var app = builder.Build();
 
