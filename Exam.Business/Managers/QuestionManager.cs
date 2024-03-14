@@ -6,6 +6,7 @@ using Exam.Dto.AppModel;
 using Exam.Dto.Dtos.QuestionDto;
 using Exam.Entities.Models;
 using ExcelDataReader;
+using log4net;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
@@ -17,12 +18,14 @@ namespace Exam.Business.Managers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _env;
+        private readonly ILog _logger;
 
-        public QuestionManager(IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment env)
+        public QuestionManager(IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment env, ILog logger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _env = env;
+            _logger = logger;
         }
 
         public async Task<ResultModel<QuestionResponseDto>> GetAllAsync()
@@ -34,7 +37,8 @@ namespace Exam.Business.Managers
             var response = _mapper.Map<List<QuestionResponseDto>>(questions);
 
             result.Data = response;
-            result.IsSuccess = true;
+            result.IsSuccess = true; 
+            _logger.Info("All questions pulled");
 
             return result;
         }
@@ -49,6 +53,7 @@ namespace Exam.Business.Managers
 
             result.Data = response;
             result.IsSuccess = true;
+            _logger.Info("Question pulled");
 
             return result;
         }
@@ -69,12 +74,14 @@ namespace Exam.Business.Managers
                     {
                         result.Message = "Image format is not valid";
                         result.IsSuccess = false;
+                        _logger.Info(result.Message);
                         return result;
                     }
                     if (model.Image.ValidSize(20))
                     {
                         result.Message = "Image is not valid";
                         result.IsSuccess = false;
+                        _logger.Info(result.Message);
                         return result;
                     }
                     if (existQuestion.ImageUrl !=null)
@@ -92,12 +99,14 @@ namespace Exam.Business.Managers
                         {
                             result.Message = "Image format is not valid";
                             result.IsSuccess = false;
+                            _logger.Info(result.Message);
                             return result;
                         }
                         if (model.Answers[i].Image.ValidSize(20))
                         {
                             result.Message = "Image is not valid";
                             result.IsSuccess = false;
+                            _logger.Info(result.Message);
                             return result;
                         }
                         if (existQuestion.Answers[i].ImageUrl != null)
@@ -113,10 +122,12 @@ namespace Exam.Business.Managers
 
                 result.Data = true;
                 result.IsSuccess = true;
+                _logger.Info("Question updated successfully");
             }
             else
             {
                 result.Message = "Question not found";
+                _logger.Info(result.Message);
             }
 
             return result;
@@ -133,6 +144,7 @@ namespace Exam.Business.Managers
 
             result.Data = true;
             result.IsSuccess = true;
+            _logger.Info("Question deleted");
 
             return result;
         }
@@ -146,6 +158,7 @@ namespace Exam.Business.Managers
             {
                 result.Message = "Question is exist";
                 result.IsSuccess = false;
+                _logger.Info(result.Message);
                 return result;
             }
 
@@ -157,12 +170,14 @@ namespace Exam.Business.Managers
                 {
                     result.Message = "Image format is not valid";
                     result.IsSuccess = false;
+                    _logger.Info(result.Message);
                     return result;
                 }
                 if (questionCreateDto.Image.ValidSize(20))
                 {
                     result.Message = "Image is not valid";
                     result.IsSuccess = false;
+                    _logger.Info(result.Message);
                     return result;
                 }
                 question.ImageUrl = questionCreateDto.Image.SaveImage(_env, "images/questionImages");
@@ -175,12 +190,14 @@ namespace Exam.Business.Managers
                     {
                         result.Message = "Image format is not valid";
                         result.IsSuccess = false;
+                        _logger.Info(result.Message);
                         return result;
                     }
                     if (questionCreateDto.Answers[i].Image.ValidSize(20))
                     {
                         result.Message = "Image is not valid";
                         result.IsSuccess = false;
+                        _logger.Info(result.Message);
                         return result;
                     }
 
@@ -195,6 +212,7 @@ namespace Exam.Business.Managers
 
             result.Data = questionResponse;
             result.IsSuccess = true;
+            _logger.Info("Question created successfully");
 
             return result;
         }
@@ -271,6 +289,7 @@ namespace Exam.Business.Managers
 
                 result.Data = true;
                 result.IsSuccess = true;
+                _logger.Info("Questions uploaded successfully from excel file");
             }
 
             return result;

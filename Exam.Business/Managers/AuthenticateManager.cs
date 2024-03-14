@@ -3,6 +3,7 @@ using Exam.Business.Managers.IManagers;
 using Exam.Dto.AppModel;
 using Exam.Dto.Dtos.AccountDto;
 using Exam.Entities.Models;
+using log4net;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -18,13 +19,15 @@ namespace Exam.Business.Managers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
+        private readonly ILog _logger;
 
-        public AuthenticateManager(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IMapper mapper)
+        public AuthenticateManager(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IMapper mapper, ILog logger)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _configuration = configuration;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<ResultModel<bool>> Registration(RegistrationRequestDto model)
@@ -36,6 +39,7 @@ namespace Exam.Business.Managers
             {
                 result.Message = "User already exists!";
                 result.IsSuccess = false;
+                _logger.Info(result.Message);
                 return result;
             }
 
@@ -46,6 +50,7 @@ namespace Exam.Business.Managers
             {
                 result.Message = registerResult.ToString();
                 result.IsSuccess = false;
+                _logger.Info(result.Message);
                 return result;
             }
 
@@ -54,11 +59,13 @@ namespace Exam.Business.Managers
             {
                 result.Message = registerResult.ToString();
                 result.IsSuccess = false;
+                _logger.Info(result.Message);
                 return result;
             }
 
             result.IsSuccess = true;
             result.Message = "User Successfully created.";
+            _logger.Info(result.Message);
             return result;
         }
 
@@ -93,9 +100,11 @@ namespace Exam.Business.Managers
 
                 result.IsSuccess = true;
                 result.Message = "Login Success.";
+                _logger.Info(result.Message);
+
             }
 
-            
+
             return result;
         }
 
@@ -125,6 +134,7 @@ namespace Exam.Business.Managers
             result.Data = true;
             result.IsSuccess = true;
             result.Message = "Role created";
+            _logger.Info(result.Message);
 
             return result;
         }
@@ -138,6 +148,7 @@ namespace Exam.Business.Managers
             {
                 result.Message = "User already exists!";
                 result.IsSuccess = false;
+                _logger.Info(result.Message);
                 return result;
             }
 
@@ -148,6 +159,7 @@ namespace Exam.Business.Managers
             {
                 result.Message = registerResult.ToString();
                 result.IsSuccess = false;
+                _logger.Info(result.Message);
                 return result;
             }
 
@@ -158,6 +170,7 @@ namespace Exam.Business.Managers
             {
                 result.Message = "Role does not exist";
                 result.IsSuccess = false;
+                _logger.Info(result.Message);
                 return result;
             }
 
@@ -166,12 +179,14 @@ namespace Exam.Business.Managers
             {
                 result.Message = registerResult.ToString();
                 result.IsSuccess = false;
+                _logger.Info(result.Message);
                 return result;
             }
 
             result.IsSuccess = true;
             result.Message = "User Successfully created.";
-                
+            _logger.Info(result.Message);
+
             return result;
         }
     }

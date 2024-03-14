@@ -4,6 +4,7 @@ using Exam.DataAccess.UnitOfWorks;
 using Exam.Dto.AppModel;
 using Exam.Dto.Dtos.ExamCategoryDto;
 using Exam.Entities.Models;
+using log4net;
 
 namespace Exam.Business.Managers
 {
@@ -11,11 +12,13 @@ namespace Exam.Business.Managers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly ILog _logger;
 
-        public ExamCategoryManager(IUnitOfWork unitOfWork, IMapper mapper)
+        public ExamCategoryManager(IUnitOfWork unitOfWork, IMapper mapper, ILog logger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<ResultModel<ExamCategory>> GetAllAsync()
@@ -28,6 +31,7 @@ namespace Exam.Business.Managers
 
             result.Data = categoryDto;
             result.IsSuccess = true;
+            _logger.Info("All categories pulled");
 
             return result;
         }
@@ -41,6 +45,7 @@ namespace Exam.Business.Managers
 
             result.Data = examCategoryDto;
             result.IsSuccess = true;
+            _logger.Info($"{examCategoryDto.Name} pulled");
 
             return result;
         }
@@ -57,10 +62,12 @@ namespace Exam.Business.Managers
                 await _unitOfWork.SaveAsync();
                 result.Data = true;
                 result.IsSuccess = true;
+                _logger.Info($"{examCategory.Name} created");
             }
             else
             {
                 result.Message = "Category already exist";
+                _logger.Info(result.Message);
             }
 
             return result;
@@ -79,10 +86,12 @@ namespace Exam.Business.Managers
                 
                 result.Data = true;
                 result.IsSuccess = true;
+                _logger.Info($"{existCategory.Name} updated to {examCategory.Name}");
             }
             else
             {
                 result.Message = "Category not found";
+                _logger.Info(result.Message);
             }
 
             return result;
@@ -99,6 +108,7 @@ namespace Exam.Business.Managers
 
             result.Data = true;
             result.IsSuccess = true;
+            _logger.Info($"{examCategory.Name} deleted");
 
             return result;
         }

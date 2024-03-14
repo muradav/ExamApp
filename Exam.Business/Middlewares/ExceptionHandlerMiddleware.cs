@@ -1,24 +1,20 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using log4net;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Formatters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Mime;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Exam.Business.Middlewares
 {
     public class ExceptionHandlerMiddleware
     {
         private readonly RequestDelegate next;
+        private readonly ILog _logger;
 
-        public ExceptionHandlerMiddleware(RequestDelegate Next)
+        public ExceptionHandlerMiddleware(RequestDelegate Next, ILog logger)
         {
             next = Next;
+            _logger = logger;
         }
 
         public async Task Invoke(HttpContext context)
@@ -42,6 +38,8 @@ namespace Exam.Business.Middlewares
                         StatusCode = context.Response.StatusCode,
                         Message = errorMessage,
                     });
+
+                    _logger.Error(errorMessage);
 
                     await context.Response.WriteAsync(json);
                 }

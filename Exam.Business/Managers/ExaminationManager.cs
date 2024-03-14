@@ -45,6 +45,7 @@ namespace Exam.Business.Managers
 
             result.Data = true;
             result.IsSuccess = true;
+            _logger.Info("Examination Created");
 
             return result;
         }
@@ -60,6 +61,7 @@ namespace Exam.Business.Managers
 
             result.Data = response;
             result.IsSuccess = true;
+            _logger.Info("Examination pulled");
 
             return result;
         }
@@ -75,7 +77,7 @@ namespace Exam.Business.Managers
 
             result.Data = response;
             result.IsSuccess = true;
-            _logger.Info("Exam pulled");
+            _logger.Info("All examinations pulled");
 
             return result;
         }
@@ -128,6 +130,7 @@ namespace Exam.Business.Managers
 
             
             result.IsSuccess = true;
+            _logger.Info("Examination ended successfully");
 
             return result;
         }
@@ -197,9 +200,13 @@ namespace Exam.Business.Managers
                     var content = stream.ToArray();
                     string mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                     string filename = "Examination Report.xlsx";
+                    _logger.Info("Examination exported to excel file");
                     return controller.File(content, mimeType, filename);
                 }
             }
+
+
+            
 
         }
     }
