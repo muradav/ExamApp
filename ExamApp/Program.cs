@@ -6,6 +6,7 @@ using Exam.DataAccess.Data;
 using Exam.DataAccess.DbInitializers;
 using Exam.DataAccess.Extensions;
 using Microsoft.EntityFrameworkCore;
+using static System.Net.WebRequestMethods;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +29,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase"));
 });
+builder.WebHost.UseSentry();
 builder.Services.AddLog4net<Program>();
 builder.Services.DbServices();
 builder.Services.AddManagerService();
@@ -49,6 +51,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseSentryTracing();
 
 app.UseMiddleware<ExceptionHandlerMiddleware>();
 
