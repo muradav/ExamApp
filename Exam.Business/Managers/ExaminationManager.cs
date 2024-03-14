@@ -5,6 +5,7 @@ using Exam.DataAccess.UnitOfWorks;
 using Exam.Dto.AppModel;
 using Exam.Dto.Dtos.ExaminationDto;
 using Exam.Entities.Models;
+using log4net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -16,11 +17,14 @@ namespace Exam.Business.Managers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly ILog _logger;
 
-        public ExaminationManager(IUnitOfWork unitOfWork, IMapper mapper)
+
+        public ExaminationManager(IUnitOfWork unitOfWork, IMapper mapper, ILog logger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<ResultModel<bool>> AddAsync(ExaminationDto model, Claim userId)
@@ -71,6 +75,7 @@ namespace Exam.Business.Managers
 
             result.Data = response;
             result.IsSuccess = true;
+            _logger.Info("Exam pulled");
 
             return result;
         }
