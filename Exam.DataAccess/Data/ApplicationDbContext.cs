@@ -22,6 +22,7 @@ namespace Exam.DataAccess.Data
         public DbSet<Answer> Answers { get; set; }
         public DbSet<Examination> Examinations { get; set; }
         public DbSet<ExaminationDetail> ExaminationDetails { get; set; }
+        public DbSet<Log> Logs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
