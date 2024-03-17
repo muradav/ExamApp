@@ -15,7 +15,10 @@ namespace Exam.DataAccess.Data
     {
         protected readonly IConfiguration Configuration;
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) {}
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) 
+        {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        }
 
         public DbSet<ExamCategory> ExamCategories { get; set; }
         public DbSet<Question> Questions { get; set; }
